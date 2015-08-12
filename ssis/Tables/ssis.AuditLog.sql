@@ -9,7 +9,7 @@ CREATE TABLE [ssis].[AuditLog](
     [Id]				BIGINT				IDENTITY (-9223372036854775808, 1) NOT NULL,
 	[AuditType]			CHAR(1)				NOT NULL,
 	[TableName]			NVARCHAR (128)		NOT NULL,
-	[KeyUID]			UNIQUEIDENTIFIER	NOT NULL,
+	[KeyId]				INT					NOT NULL,
 	[ColumnName]		NVARCHAR (128)		NOT NULL,
     [OldValue]			NVARCHAR (4000)		NULL,
 	[NewValue]			NVARCHAR (4000)		NULL,

@@ -56,25 +56,21 @@ BEGIN
 		AND		ORDINAL_POSITION = @field
 
 		SET @sql = 'INSERT [ssis].[AuditLog] 
-		([CustomerUID]
-		,[VersionUID]
-		,[AuditType]
+		([AuditType]
 		,[TableName]
-		,[KeyUID]
+		,[KeyId]
 		,[ColumnName]
 		,[OldValue]
 		,[NewValue])
-SELECT	ISNULL(i.[CustomerUID], d.[CustomerUID]) AS [CustomerUID]
-		,ISNULL(i.[VersionUID], d.[VersionUID]) AS [VersionUID]
-		,''' + @auditType + '''
+SELECT	''' + @auditType + '''
 		,''' + @tableName + '''
-		,ISNULL(i.[UID], d.[UID]) AS [KeyUID]
+		,ISNULL(i.[ConfigVariableID], d.[ConfigVariableID]) AS [KeyId]
 		,''' + @fieldname + '''
 		,CONVERT(VARCHAR(4000), d.[' + @fieldname + '])
 		,CONVERT(VARCHAR(4000), i.[' + @fieldname + '])
 FROM	#ins i 
 FULL OUTER JOIN #del d
-	ON	i.[UID] = d.[UID]
+	ON	i.[ConfigVariableID] = d.[ConfigVariableID]
 WHERE	i.[' + @fieldname + '] <> d.[' + @fieldname + ']
 	OR	(i.[' + @fieldname + '] IS NULL AND  d.[' + @fieldname + '] IS NOT NULL)
 	OR	(i.[' + @fieldname + '] IS NOT NULL AND  d.[' + @fieldname + '] IS NULL)' 

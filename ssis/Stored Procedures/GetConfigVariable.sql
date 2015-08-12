@@ -9,7 +9,8 @@ CREATE PROCEDURE [ssis].[GetConfigVariable]
     @SystemName			[varchar](100),
 	@ObjectName			[varchar](500),
 	@VariableName		[varchar](100),
-	@VariableValue		[varchar](200) 
+	@VariableValue		[varchar](200)--,
+	--@ExecutionID		[int]
 AS
 SET NOCOUNT ON
 --BEGIN TRY
@@ -26,16 +27,21 @@ SET NOCOUNT ON
 				([SystemName]
 				,[ObjectName]
 				,[VariableName]
-				,[VariableValue])
+				,[VariableValue]
+				--,[ExecutionID]
+				)
 		VALUES	(@SystemName
 				,@ObjectName
 				,@VariableName
-				,@VariableValue)
+				,@VariableValue
+				--,@ExecutionID
+				)
 	END
 	ELSE
 	BEGIN
 		UPDATE	[ssis].[ConfigVariable]
 		SET		[RollbackValue] = [VariableValue]
+				--,[RollbackExecutionID] = [ExecutionID]
 		WHERE	[SystemName] = @SystemName
 		AND		[ObjectName] = @ObjectName
 		AND		[VariableName] = @VariableName

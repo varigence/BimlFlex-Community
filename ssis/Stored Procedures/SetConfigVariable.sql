@@ -10,14 +10,17 @@ CREATE PROCEDURE [ssis].[SetConfigVariable]
 	@ObjectName			[varchar](500),
 	@VariableName		[varchar](100),
 	@VariableValue		[varchar](200)
+	--,@ExecutionID	[int]
 AS
 SET NOCOUNT ON
 BEGIN TRY
-	DECLARE @PreviousValue	VARCHAR(200)
+	DECLARE @PreviousValue			VARCHAR(200)
+			,@PreviousExecutionID	INT
 
 	IF UPPER(ISNULL(@VariableValue, '')) IN ('', 'NULL', '0', '1900-01-01') SET @VariableValue = NULL; 
 
 	SELECT	@PreviousValue = [VariableValue]
+			--,@PreviousExecutionID = [PreviousExecutionID]
 	FROM	[ssis].[ConfigVariable]
 	WHERE	[SystemName] = @SystemName
 	AND		[ObjectName] = @ObjectName
@@ -25,11 +28,13 @@ BEGIN TRY
 	
 	-- Write test for variable casting
 	--IF TRY_PARSE(@PreviousValue AS DATETIME2, )
-	IF (@PreviousValue > @VariableValue)
+	IF (ISNULL(@PreviousValue, '') < ISNULL(@VariableValue, ''))
 	BEGIN
 		UPDATE	[ssis].[ConfigVariable]
 		SET		 [VariableValue] = ISNULL(@VariableValue, [VariableValue])
+				--,[ExecutionID] = @ExecutionID
 				,[PreviousValue] = @PreviousValue
+				--,[PreviousExecutionID] = [ExecutionID]
 		WHERE	[SystemName] = @SystemName
 		AND		[ObjectName] = @ObjectName
 		AND		[VariableName] = @VariableName
