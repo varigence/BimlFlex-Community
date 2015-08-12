@@ -16,6 +16,8 @@ CREATE PROCEDURE [ssis].[LogExecution](
 ) 
 AS 
 
+DECLARE	@PackageID	INT
+
 SELECT  @ExecutionID = MAX([ExecutionID])
 FROM    [ssis].[Execution]
 WHERE   [SourceGUID] = REPLACE(REPLACE(@SourceGUID, '{', ''), '}', '')
@@ -24,6 +26,17 @@ AND		[ParentExecutionID] = ISNULL(@ParentExecutionID, -1);
 
 IF @ExecutionID IS NULL
 BEGIN
+	
+	SELECT	@PackageID = [PackageID]
+	FROM	[ssis].[Package]
+	WHERE	[PackageName] = @PackageName
+
+	IF @PackageID IS NULL
+	BEGIN
+		INSERT INTO [ssis].[Package] ([PackageName]) VALUES (@PackageName)
+		SELECT @PackageID = SCOPE_IDENTITY();
+	END
+
 	INSERT INTO [ssis].[Execution]
 			([ParentExecutionID]
 			,[ExecutionGUID]
@@ -39,6 +52,14 @@ BEGIN
 			,@ServerExecutionID);
 
 	SELECT  @ExecutionID = SCOPE_IDENTITY();
+
+	INSERT INTO [ssis].[PackageExecution]
+			([PackageID]
+			,[ExecutionID]
+			,[ExecutionStatus])
+	VALUES	(@PackageID
+			,@ExecutionID
+			,'P')	-- Processing
 END
 
 IF ISNULL(REPLACE(REPLACE(@ParentSourceGUID, '{', ''), '}', ''), '') <> ''
