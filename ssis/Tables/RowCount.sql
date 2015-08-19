@@ -7,7 +7,7 @@
 */
 CREATE TABLE [ssis].[RowCount] (
     [RowCountID]			BIGINT				IDENTITY (-9223372036854775808, 1) NOT NULL,
-    [ExecutionID]			INT					NOT NULL,
+    [ExecutionID]			BIGINT				NOT NULL,
     [ComponentName]         NVARCHAR(200)		NOT NULL,
     [ObjectName]			NVARCHAR(200)		NOT NULL,
     [CountType]				VARCHAR(20)			NOT NULL,

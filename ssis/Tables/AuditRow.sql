@@ -7,7 +7,7 @@
 */
 CREATE TABLE [ssis].[AuditRow] (
     [AuditRowID]			BIGINT				IDENTITY (-9223372036854775808, 1) NOT NULL,
-    [ExecutionID]			INT					NOT NULL,
+    [ExecutionID]			BIGINT				NOT NULL,
 	[ComponentName]			NVARCHAR(200)		NOT NULL,
     [ObjectName]			NVARCHAR(200)		NOT NULL,
     [AuditType]				VARCHAR(20)			NOT NULL,

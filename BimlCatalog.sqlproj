@@ -95,8 +95,6 @@
     <Build Include="ssis\Stored Procedures\SetConfigVariable.sql" />
     <Build Include="ssis\Stored Procedures\GetConfigVariable.sql" />
     <Build Include="ssis\Tables\Package.sql" />
-    <Build Include="ssis\Tables\PackageExecution.sql" />
-    <Build Include="ssis\Tables\Batch.sql" />
     <Build Include="ssis\Stored Procedures\GetBatchExecutions.sql" />
     <Build Include="ssis\Stored Procedures\GetBatchPackages.sql" />
     <Build Include="ssis\Stored Procedures\GetLatestExecution.sql" />
@@ -107,13 +105,17 @@
     <Build Include="ssis\Stored Procedures\GetExecutionPerformance.sql" />
     <Build Include="ssis\Stored Procedures\GetExecutionPerformanceHistory.sql" />
     <Build Include="ssis\Stored Procedures\GetAuditRowDetails.sql" />
-    <Build Include="ssis\Tables\Application.sql" />
     <Build Include="ssis\Triggers\trg_ConfigVariableAudit.sql" />
     <Build Include="ssis\Tables\ssis.AuditLog.sql" />
+    <Build Include="ssis\Tables\ExecutionError.sql" />
+    <Build Include="ssis\Stored Procedures\LogBatchExecution.sql" />
+    <Build Include="ssis\Stored Procedures\LogExecutionError.sql" />
+    <Build Include="ssis\Stored Procedures\LogExecutionEnd.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Vcs.publish.xml" />
-    <None Include="Vcs_1.publish.xml" />
-    <None Include="BimlCatalog.publish.Localhost.xml" />
+    <None Include="BimlCatalog.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="Script.PreDeployment1.sql" />
   </ItemGroup>
 </Project>
