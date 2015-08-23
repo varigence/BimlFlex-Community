@@ -14,6 +14,7 @@ CREATE TABLE [ssis].[Execution](
     [SourceGUID]				NCHAR (36)			NOT NULL,
 	[PackageID]					INT					NOT NULL,
 	[ExecutionStatus]			CHAR(1)				NOT NULL,
+	[NextLoadStatus]			CHAR(1)				NULL,
 	[StartTime]					DATETIMEOFFSET(7)	CONSTRAINT [DF_ssisExecution_StartTime] DEFAULT (GETDATE()) NULL,
 	[EndTime]					DATETIMEOFFSET(7)	NULL,
     CONSTRAINT [PK_ssis_ServerExecution] PRIMARY KEY CLUSTERED ([ExecutionID] DESC)

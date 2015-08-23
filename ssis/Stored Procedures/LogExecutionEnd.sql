@@ -14,11 +14,11 @@ BEGIN TRY
 	DECLARE @ErrMsg nvarchar(4000), @ErrSeverity int
 
 	BEGIN TRANSACTION
-		IF EXISTS (SELECT 1 FROM [ssis].[Execution] WHERE [ExecutionID] = @ExecutionID AND [ExecutionStatus] = 'E')
-			UPDATE	[ssis].[Execution]
-			SET		 [ExecutionStatus] = 'S' -- Success
-					,[EndTime] = GETDATE()
-			WHERE	[ExecutionID] = @ExecutionID
+		UPDATE	[ssis].[Execution]
+		SET		 [ExecutionStatus] = 'S' -- Success
+				,[NextLoadStatus] = 'P'
+				,[EndTime] = GETDATE()
+		WHERE	[ExecutionID] = @ExecutionID
 	COMMIT
 END TRY
 

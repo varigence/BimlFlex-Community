@@ -11,10 +11,10 @@ CREATE TABLE [ssis].[ConfigVariable] (
     [ObjectName]			VARCHAR (500)	DEFAULT ('Default') NOT NULL,
     [VariableName]			VARCHAR (100)	NOT NULL,
     [VariableValue]			VARCHAR (200)	NOT NULL,
-	[ExecutionID]			INT				NULL,
+	[ExecutionID]			BIGINT			NULL,
 	[PreviousValue]			VARCHAR (200)	NULL,
-	[PreviousExecutionID]	INT				NULL,
-	[RollbackValue]			VARCHAR (200)	NULL,
-	[RollbackExecutionID]	INT				NULL,
+	--[PreviousExecutionID]	INT				NULL,
+	--[RollbackValue]			VARCHAR (200)	NULL,
+	--[RollbackExecutionID]	INT				NULL,
     CONSTRAINT [PK_ssis_ConfigVariable] PRIMARY KEY CLUSTERED ([ConfigVariableID] ASC)
 );

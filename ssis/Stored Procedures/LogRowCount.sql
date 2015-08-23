@@ -6,7 +6,7 @@
 # You may obtain a copy of the License by contacting support@varigence.com.
 */
 CREATE PROCEDURE [ssis].[LogRowCount](
-    @ExecutionID			[int],
+    @ExecutionID			[bigint],
     @ComponentName			[nvarchar](200),
     @ObjectName				[nvarchar](200),
     @CountType				[varchar](20),

@@ -20,6 +20,7 @@ BEGIN TRY
 	BEGIN TRANSACTION
 		UPDATE	[ssis].[Execution]
 		SET		 [ExecutionStatus] = 'F' -- Failed
+				,[NextLoadStatus] = 'R'
 				,[EndTime] = GETDATE()
 				,@PackageID = [PackageID]
 		WHERE	[ExecutionID] = @ExecutionID

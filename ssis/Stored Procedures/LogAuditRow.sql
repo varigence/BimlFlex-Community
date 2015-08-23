@@ -6,7 +6,7 @@
 # You may obtain a copy of the License by contacting support@varigence.com.
 */
 CREATE PROCEDURE [ssis].[LogAuditRow]
-    @ExecutionID			[int],
+    @ExecutionID			[bigint],
     @ComponentName			[nvarchar](200),
     @ObjectName				[nvarchar](200),
     @AuditType				[varchar](20),
