@@ -4,5 +4,5 @@
 	[ExecutionID]			BIGINT			NOT NULL,
 	[ErrorCode]				INT				NOT NULL,
 	[ErrorDescription]		NVARCHAR(MAX)	NOT NULL,
-	CONSTRAINT [PK_ssisExecutionError] PRIMARY KEY CLUSTERED ([PackageID] DESC, [ExecutionID] DESC)
+	CONSTRAINT [PK_ssisExecutionError] PRIMARY KEY CLUSTERED ([ExecutionErrorID] DESC)
 )
