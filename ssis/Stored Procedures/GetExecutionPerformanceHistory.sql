@@ -20,7 +20,7 @@ SELECT TOP(10) a.[execution_id],
 FROM   [SSISDB].[catalog].[executions] a, 
        [SSISDB].[catalog].[executions] b 
 WHERE  b.[execution_id] = @ExecutionID 
-       --AND a.[status] = 7 
+       AND a.[status] = 7 
        AND a.[package_name] = b.[package_name] 
        AND a.[project_name] = b.[project_name] 
        AND a.[folder_name] = b.[folder_name] 
