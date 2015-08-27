@@ -9,11 +9,11 @@ CREATE PROCEDURE [ssis].[GetAuditRowDetails]
 	@AuditRowID VARCHAR(25)
 AS
 
-SELECT	 [RowID]
-		,[ColumnName]
-		,[ColumnValue]
-FROM	[ssis].[AuditRowData]
-WHERE	[AuditRowID] = @AuditRowID
+	SELECT	 [RowID]
+			,[ColumnName]
+			,[ColumnValue]
+	FROM	[ssis].[AuditRowData]
+	WHERE	[AuditRowID] = @AuditRowID
 
 RETURN 0
 

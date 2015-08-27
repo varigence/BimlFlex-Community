@@ -11,14 +11,13 @@ BEGIN
 	SELECT	 [PackageName] AS [ObjectName]
 			,MAX(e.[ExecutionID]) AS [ParentExecutionID]
 			,MAX(e.[ServerExecutionID]) AS [ServerExecutionID] 
-	FROM	[ssis].[PackageExecution] pe
-	INNER JOIN [ssis].[Execution] e
-		ON	pe.[ExecutionID] = e.[ExecutionID]
+	FROM	[ssis].[Execution] e
 	INNER JOIN [ssis].[Package] p
-		ON	pe.[PackageID] = p.[PackageID]
+		ON	e.[PackageID] = p.[PackageID]
 	WHERE	e.[ParentExecutionID] = -1 
 	AND		(p.[PackageName] LIKE '%Batch%' OR p.[PackageName] LIKE '%Control%') 
 	GROUP BY p.[PackageName]
+	
 END
 GO
 

@@ -11,28 +11,25 @@ CREATE PROCEDURE [ssis].[GetBatchExecutions]
 AS
 
 SELECT	 TOP 10 
-		 bce.[ExecutionID]
+		 e.[ExecutionID]
 		,sce.[execution_id] AS [SSISExecutionID]
-		,bce.[ParentExecutionID]
-		,bce.[ServerExecutionID]
+		,e.[ParentExecutionID]
+		,e.[ServerExecutionID]
 		,p.[PackageName]
 		,CONVERT(DATETIME, sce.[start_time]) AS [start_time]
 		,sce.[status]
-		,bce.[ParentSourceGUID]
-		,bce.[ExecutionGUID]
-		,bce.[SourceGUID] 
-FROM   [ssis].[Execution] bce 
-INNER JOIN [ssis].[PackageExecution] pe
-	ON	bce.[ExecutionID] = pe.[ExecutionID]
+		,e.[ParentSourceGUID]
+		,e.[ExecutionGUID]
+		,e.[SourceGUID] 
+FROM   [ssis].[Execution] e 
 INNER JOIN [ssis].[Package] p
-	ON	pe.[PackageID] = p.[PackageID]
+	ON	e.[PackageID] = p.[PackageID]
 INNER JOIN [SSISDB].[catalog].[executions] sce 
-	ON bce.[ServerExecutionID] = sce.[execution_id] 
-WHERE  bce.[ParentExecutionID] = -1 
-AND		bce.[ServerExecutionID] <> 0 
-AND		sce.[start_time] >= CONVERT(DATE, @StartDate, 103)
-AND		sce.[start_time] <= CONVERT(DATE, @EndDate, 103)
-ORDER  BY bce.[ExecutionID] DESC
+	ON e.[ServerExecutionID] = sce.[execution_id] 
+WHERE  p.[ParentPackageID] IS NULL 
+AND		CONVERT(DATE, sce.[start_time]) >= CONVERT(DATE, @StartDate, 103)
+AND		CONVERT(DATE, sce.[start_time]) <= CONVERT(DATE, @EndDate, 103)
+ORDER  BY e.[ExecutionID] DESC
 
 RETURN 0
 GO
