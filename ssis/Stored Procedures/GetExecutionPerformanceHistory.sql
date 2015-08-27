@@ -6,25 +6,32 @@
 # You may obtain a copy of the License by contacting support@varigence.com.
 */
 CREATE PROCEDURE [ssis].[GetExecutionPerformanceHistory]
-	@ExecutionID VARCHAR(25)
+	@ObjectName VARCHAR(50)
 AS
 
-SELECT TOP(10) a.[execution_id], 
-               a.[package_name], 
-               Cast(a.[start_time] AS SMALLDATETIME) AS shortStartTime, 
-               CONVERT (DATETIME, a.[start_time])    AS start_time, 
-               Round(CONVERT(FLOAT,		Datediff(millisecond, a.[start_time], 
-                                          Isnull(a.[end_time], 
-                                          Sysdatetimeoffset()))) / 1000, 2 
-               )                                     AS duration 
-FROM   [SSISDB].[catalog].[executions] a, 
-       [SSISDB].[catalog].[executions] b 
-WHERE  b.[execution_id] = @ExecutionID 
-       AND a.[status] = 7 
-       AND a.[package_name] = b.[package_name] 
-       AND a.[project_name] = b.[project_name] 
-       AND a.[folder_name] = b.[folder_name] 
-ORDER  BY [start_time] DESC 
+SELECT
+TOP 10 e.[ExecutionID]
+,e.[ParentExecutionID]
+,e.[ServerExecutionID]
+,e.[ParentSourceGUID]
+,e.[ExecutionGUID]
+,e.[SourceGUID]
+,e.[PackageID]
+,p.[PackageName]
+,e.[ExecutionStatus]
+,e.[NextLoadStatus]
+,FORMAT(CONVERT(DATE, e.[StartTime]), 'dd/MM/yyyy') AS [StartDate]
+,FORMAT(CONVERT(DATE, e.[EndTime]), 'dd/MM/yyyy') AS [EndDate]
+,CONVERT(DATETIME, e.[StartTime]) AS [StartTime]
+,CONVERT(DATETIME, e.[EndTime]) AS [EndTime]
+,ROUND(CONVERT(FLOAT, DATEDIFF(millisecond,e. [StartTime],
+							ISNULL([EndTime],
+							SYSDATETIMEOFFSET()))) / 1000, 2) AS [Duration]
+FROM [BimlCatalog].[ssis].[Execution] e
+JOIN [BimlCatalog].[ssis].[Package] p ON e.PackageID = p.PackageID
+WHERE p.[PackageName] = @ObjectName
+AND e.[ExecutionStatus] = 'S'
+ORDER  BY e.[StartTime] DESC 
 
 RETURN 0
 
