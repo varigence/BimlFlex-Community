@@ -10,12 +10,11 @@ CREATE PROCEDURE [ssis].[SetConfigVariable]
 	@ObjectName			[varchar](500),
 	@VariableName		[varchar](100),
 	@VariableValue		[varchar](200),
-	@ExecutionID		[bigint]
+	@ExecutionID		[bigint] = NULL
 AS
 SET NOCOUNT ON
 BEGIN TRY
 	DECLARE @PreviousValue			VARCHAR(200)
-			,@PreviousExecutionID	INT
 
 	IF UPPER(ISNULL(@VariableValue, '')) IN ('', 'NULL', '0', '1900-01-01') SET @VariableValue = NULL; 
 
@@ -33,7 +32,6 @@ BEGIN TRY
 		SET		 [VariableValue] = ISNULL(@VariableValue, [VariableValue])
 				,[ExecutionID] = @ExecutionID
 				,[PreviousValue] = @PreviousValue
-				--,[PreviousExecutionID] = [ExecutionID]
 		WHERE	[SystemName] = @SystemName
 		AND		[ObjectName] = @ObjectName
 		AND		[VariableName] = @VariableName

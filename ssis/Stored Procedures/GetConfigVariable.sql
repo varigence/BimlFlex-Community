@@ -10,7 +10,7 @@ CREATE PROCEDURE [ssis].[GetConfigVariable]
 	@ObjectName			[varchar](500),
 	@VariableName		[varchar](100),
 	@VariableValue		[varchar](200),
-	@ExecutionID		[bigint]
+	@ExecutionID		[bigint] = NULL
 AS
 SET NOCOUNT ON
 --BEGIN TRY
