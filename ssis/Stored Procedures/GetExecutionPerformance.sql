@@ -6,50 +6,28 @@
 # You may obtain a copy of the License by contacting support@varigence.com.
 */
 CREATE PROCEDURE [ssis].[GetExecutionPerformance]
-	@ExecutionID VARCHAR(25)
+	@ExecutionID BIGINT
 AS
 
-
-WITH ve 
-     AS (SELECT [validation_id] AS execution_id, 
-                [use32bitruntime], 
-                [start_time], 
-                [end_time], 
-                [caller_name], 
-                [folder_name], 
-                [project_name], 
-                [object_name]   AS package_name, 
-                [status], 
-                'v'             AS op_type 
-         FROM   [SSISDB].[catalog].[validations] 
-         WHERE  [object_type] = 30 
-         UNION ALL 
-         SELECT [execution_id], 
-                [use32bitruntime], 
-                [start_time], 
-                [end_time], 
-                [caller_name], 
-                [folder_name], 
-                [project_name], 
-                [package_name], 
-                [status], 
-                'e' AS op_type 
-         FROM   [SSISDB].[catalog].[executions]) 
-SELECT [execution_id], 
-       [folder_name], 
-       [project_name], 
-       [package_name], 
-       [use32bitruntime], 
-       [status], 
-       CONVERT (DATETIME, [start_time]) AS start_time, 
-       CONVERT (DATETIME, [end_time])   AS end_time, 
-       Round(CONVERT(FLOAT, Datediff(millisecond, [start_time], 
-                                  Isnull([end_time], Sysdatetimeoffset()))) / 
-             1000, 2) 
-                                        AS duration, 
-       [caller_name] 
-FROM   ve 
-WHERE  [execution_id] = @ExecutionID 
+SELECT e.[ExecutionID]
+      ,e.[ParentExecutionID]
+      ,e.[ServerExecutionID]
+      ,e.[ParentSourceGUID]
+      ,e.[ExecutionGUID]
+      ,e.[SourceGUID]
+      ,e.[PackageID]
+	  ,p.[PackageName]
+	  ,p.[ProjectName]
+      ,e.[ExecutionStatus]
+      ,e.[NextLoadStatus]
+      ,CONVERT(DATETIME, e.[StartTime]) AS [StartTime]
+      ,CONVERT(DATETIME, e.[EndTime]) AS [EndTime]
+	  ,ROUND(CONVERT(FLOAT, DATEDIFF(millisecond, [StartTime], 
+                                  ISNULL([EndTime], Sysdatetimeoffset()))) / 
+             1000, 2) AS [Duration]
+  FROM [BimlCatalog].[ssis].[Execution] e
+  JOIN [BimlCatalog].[ssis].[Package] p ON e.[PackageID] = p.[PackageID]
+  WHERE [ExecutionID] = @ExecutionID 
 
 RETURN 0
 
