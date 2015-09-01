@@ -7,6 +7,7 @@
 */
 CREATE PROCEDURE [ssis].[LogExecutionError]
 	@ExecutionID		BIGINT,
+	@IsBatch			BIT,
 	@ErrorCode			INT,
 	@ErrorDescription	NVARCHAR(MAX)
 WITH ENCRYPTION
@@ -18,6 +19,20 @@ BEGIN TRY
 	DECLARE	@PackageID		INT
 
 	BEGIN TRANSACTION
+		IF @IsBatch = 1
+		BEGIN
+			UPDATE	[ssis].[Execution]
+			SET		[NextLoadStatus] = 'R'
+			WHERE	[ParentExecutionID] = @ExecutionID
+
+			UPDATE	cv
+			SET		[VariableValue] = [PreviousValue]
+			FROM	[ssis].[Execution] e
+			INNER JOIN [ssis].[ConfigVariable] cv
+				ON	e.[ExecutionID] = cv.[ExecutionID]
+			WHERE	e.[ParentExecutionID] = @ExecutionID
+		END
+
 		UPDATE	[ssis].[Execution]
 		SET		 [ExecutionStatus] = 'F' -- Failed
 				,[NextLoadStatus] = 'R'

@@ -6,7 +6,7 @@
 # You may obtain a copy of the License by contacting support@varigence.com.
 */
 CREATE TABLE [ssis].[Execution](
-    [ExecutionID]				BIGINT				IDENTITY (-9223372036854775808, 1) NOT NULL,
+    [ExecutionID]				BIGINT				IDENTITY (1, 1) NOT NULL,
     [ParentExecutionID]			BIGINT				NULL,
 	[ServerExecutionID]			BIGINT				NOT NULL,
     [ParentSourceGUID]			NCHAR (36)			NULL,

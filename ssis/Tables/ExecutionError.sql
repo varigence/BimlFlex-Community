@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [ssis].[ExecutionError](
-	[ExecutionErrorID]		BIGINT			IDENTITY (-9223372036854775808, 1) NOT NULL,
+	[ExecutionErrorID]		BIGINT			IDENTITY (1, 1) NOT NULL,
 	[PackageID]				INT				NOT NULL,
 	[ExecutionID]			BIGINT			NOT NULL,
 	[ErrorCode]				INT				NOT NULL,

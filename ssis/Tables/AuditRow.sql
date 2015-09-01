@@ -6,7 +6,7 @@
 # You may obtain a copy of the License by contacting support@varigence.com.
 */
 CREATE TABLE [ssis].[AuditRow] (
-    [AuditRowID]			BIGINT				IDENTITY (-9223372036854775808, 1) NOT NULL,
+    [AuditRowID]			BIGINT				IDENTITY (1, 1) NOT NULL,
     [ExecutionID]			BIGINT				NOT NULL,
 	[ComponentName]			NVARCHAR(200)		NOT NULL,
     [ObjectName]			NVARCHAR(200)		NOT NULL,

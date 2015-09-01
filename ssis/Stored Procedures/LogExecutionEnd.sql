@@ -6,7 +6,8 @@
 # You may obtain a copy of the License by contacting support@varigence.com.
 */
 CREATE PROCEDURE [ssis].[LogExecutionEnd]
-	@ExecutionID		BIGINT
+	@ExecutionID		BIGINT,
+	@IsBatch			BIT
 WITH ENCRYPTION
 AS
 SET NOCOUNT ON

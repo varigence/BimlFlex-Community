@@ -9,8 +9,8 @@ CREATE PROCEDURE [ssis].[GetConfigVariable]
     @SystemName			[varchar](100),
 	@ObjectName			[varchar](500),
 	@VariableName		[varchar](100),
-	@VariableValue		[varchar](200) --,
-	--@ExecutionID		[bigint]
+	@VariableValue		[varchar](200),
+	@ExecutionID		[bigint]
 AS
 SET NOCOUNT ON
 --BEGIN TRY
@@ -28,13 +28,13 @@ SET NOCOUNT ON
 				,[ObjectName]
 				,[VariableName]
 				,[VariableValue]
-				--,[ExecutionID]
+				,[ExecutionID]
 				)
 		VALUES	(@SystemName
 				,@ObjectName
 				,@VariableName
 				,@VariableValue
-				--,@ExecutionID
+				,@ExecutionID
 				)
 	END
 	--ELSE
