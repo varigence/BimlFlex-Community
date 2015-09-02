@@ -9,28 +9,28 @@ CREATE PROCEDURE [ssis].[GetExecutionPerformanceHistory]
 	@ObjectName VARCHAR(50)
 AS
 
-SELECT
-TOP 10 e.[ExecutionID]
-,e.[ParentExecutionID]
-,e.[ServerExecutionID]
-,e.[ParentSourceGUID]
-,e.[ExecutionGUID]
-,e.[SourceGUID]
-,e.[PackageID]
-,p.[PackageName]
-,e.[ExecutionStatus]
-,e.[NextLoadStatus]
-,FORMAT(CONVERT(DATE, e.[StartTime]), 'dd/MM/yyyy') AS [StartDate]
-,FORMAT(CONVERT(DATE, e.[EndTime]), 'dd/MM/yyyy') AS [EndDate]
-,CONVERT(DATETIME, e.[StartTime]) AS [StartTime]
-,CONVERT(DATETIME, e.[EndTime]) AS [EndTime]
-,ROUND(CONVERT(FLOAT, DATEDIFF(millisecond,e. [StartTime],
-							ISNULL([EndTime],
-							SYSDATETIMEOFFSET()))) / 1000, 2) AS [Duration]
-FROM [BimlCatalog].[ssis].[Execution] e
-JOIN [BimlCatalog].[ssis].[Package] p ON e.PackageID = p.PackageID
-WHERE p.[PackageName] = @ObjectName
-AND e.[ExecutionStatus] = 'S'
+SELECT	TOP 10 e.[ExecutionID]
+		,e.[ParentExecutionID]
+		,e.[ServerExecutionID]
+		,e.[ParentSourceGUID]
+		,e.[ExecutionGUID]
+		,e.[SourceGUID]
+		,e.[PackageID]
+		,p.[PackageName]
+		,e.[ExecutionStatus]
+		,e.[NextLoadStatus]
+		,FORMAT(CONVERT(DATE, e.[StartTime]), 'dd/MM/yyyy') AS [StartDate]
+		,FORMAT(CONVERT(DATE, e.[EndTime]), 'dd/MM/yyyy') AS [EndDate]
+		,CONVERT(DATETIME, e.[StartTime]) AS [StartTime]
+		,CONVERT(DATETIME, e.[EndTime]) AS [EndTime]
+		,ROUND(CONVERT(FLOAT, DATEDIFF(millisecond,e. [StartTime],
+									ISNULL([EndTime],
+									SYSDATETIMEOFFSET()))) / 1000, 2) AS [Duration]
+FROM	[ssis].[Execution] e
+INNER JOIN	[ssis].[Package] p 
+ON		e.[PackageID] = p.[PackageID]
+WHERE	p.[PackageName] = @ObjectName
+AND		e.[ExecutionStatus] = 'S'
 ORDER  BY e.[StartTime] DESC 
 
 RETURN 0

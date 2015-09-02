@@ -12,23 +12,21 @@ AS
 
 SELECT	 TOP 10 
 		 e.[ExecutionID]
-		,sce.[execution_id] AS [SSISExecutionID]
+		,e.[ServerExecutionID] AS [SSISExecutionID]
 		,e.[ParentExecutionID]
 		,e.[ServerExecutionID]
 		,p.[PackageName]
-		,CONVERT(DATETIME, sce.[start_time]) AS [start_time]
-		,sce.[status]
+		,CONVERT(DATETIME, e.[StartTime]) AS [StartTime]
+		,e.[ExecutionStatus] 
 		,e.[ParentSourceGUID]
 		,e.[ExecutionGUID]
 		,e.[SourceGUID] 
 FROM   [ssis].[Execution] e 
 INNER JOIN [ssis].[Package] p
 	ON	e.[PackageID] = p.[PackageID]
-INNER JOIN [SSISDB].[catalog].[executions] sce 
-	ON e.[ServerExecutionID] = sce.[execution_id] 
 WHERE  p.[ParentPackageID] IS NULL 
-AND		CONVERT(DATE, sce.[start_time]) >= CONVERT(DATE, @StartDate, 103)
-AND		CONVERT(DATE, sce.[start_time]) <= CONVERT(DATE, @EndDate, 103)
+AND		CONVERT(DATE, e.[StartTime]) >= CONVERT(DATE, @StartDate, 103)
+AND		CONVERT(DATE, e.[StartTime]) <= CONVERT(DATE, @EndDate, 103)
 ORDER  BY e.[ExecutionID] DESC
 
 RETURN 0

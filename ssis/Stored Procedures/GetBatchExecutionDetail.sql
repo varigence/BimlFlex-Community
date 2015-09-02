@@ -16,7 +16,7 @@ SELECT	 sce.[executable_id]
 		,sce.[execution_id]
 		,sce.[executable_name]
 		,sce.[executable_guid]
-		,sce.[package_name]
+		,p.[PackageName] AS [package_name]
 		,sce.[package_path]
 		,CONVERT(DATETIME, bce.[StartTime]) AS [start_time]
 		,CONVERT(DATETIME, bce.[EndTime]) AS [end_time]
@@ -24,22 +24,24 @@ SELECT	 sce.[executable_id]
 		,SUM(CASE WHEN brc.[CountType] = 'Select' THEN brc.[RowCount] END) AS [RowCount]
 		,bar.[AuditType]
 		,SUM(bar.[RowCount]) AS [AuditTypeRowCount]
-FROM   [SSISDB].[catalog].[executables] sce 
-INNER JOIN [ssis].[Execution] bce 
+FROM   [ssis].[Execution] bce
+INNER JOIN [ssis].[Package] p
+	ON	bce.[PackageID] = p.[PackageID] 
+LEFT OUTER JOIN [SSISDB].[catalog].[executables] sce 
     ON	sce.[executable_guid] = '{' + bce.[ParentSourceGUID] COLLATE SQL_LATIN1_GENERAL_CP1_CI_AS + '}' 
 LEFT OUTER JOIN [ssis].[RowCount] brc 
 	ON	brc.[ExecutionID] = bce.[ExecutionID] 
 LEFT OUTER JOIN [ssis].[AuditRow] bar 
 	ON	bar.[ExecutionID] = bce.[ExecutionID] 
 WHERE	bce.[ParentExecutionID] = @ParentExecutionID 
-AND		sce.[execution_id] = @ServerExecutionID 
+--AND		sce.[execution_id] = @ServerExecutionID 
 GROUP BY sce.[executable_id] 
 		,bce.[ParentExecutionID]
 		,bce.[ExecutionID]
 		,sce.[execution_id]
 		,sce.[executable_name]
 		,sce.[executable_guid]
-		,sce.[package_name]
+		,p.[PackageName]
 		,sce.[package_path]
 		,bce.[StartTime]
 		,bce.[EndTime]
