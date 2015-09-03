@@ -12,7 +12,6 @@ CREATE TABLE [ssis].[AuditRow] (
     [ObjectName]			NVARCHAR(200)		NOT NULL,
     [AuditType]				VARCHAR(20)			NOT NULL,
     [RowCount]				INT					NULL,
-    [DistinctRowCount]		INT					NULL,
     [AuditRowSchema]		XML					NOT NULL,
     CONSTRAINT [PK_ssis_AuditRow] PRIMARY KEY CLUSTERED ([AuditRowID] DESC)
 );

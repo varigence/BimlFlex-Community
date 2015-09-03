@@ -11,7 +11,6 @@ CREATE PROCEDURE [ssis].[LogAuditRow]
     @ObjectName				[nvarchar](200),
     @AuditType				[varchar](20),
     @RowCount				[int],
-    @DistinctRowCount		[int] = NULL,
     @AuditRowSchema			[xml],
 	@AuditRowData			[AuditRowDataType] READONLY
 AS
@@ -27,7 +26,6 @@ BEGIN TRY
         ,[ObjectName]
         ,[AuditType]
         ,[RowCount]
-        ,[DistinctRowCount]
         ,[AuditRowSchema])
     VALUES
         (@ExecutionID
@@ -35,7 +33,6 @@ BEGIN TRY
         ,@ObjectName
         ,@AuditType
         ,@RowCount
-        ,@DistinctRowCount
         ,@AuditRowSchema);
 
 	SELECT @AuditRowID = SCOPE_IDENTITY();

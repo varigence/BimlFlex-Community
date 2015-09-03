@@ -28,6 +28,12 @@ BEGIN
 END
 GO
 
+IF EXISTS(SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[ssis].[AuditRow]') AND name = N'DistinctRowCount')
+BEGIN
+	ALTER TABLE [ssis].[AuditRow] DROP COLUMN  [DistinctRowCount]
+END
+GO
+
 IF EXISTS(SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[ssis].[ConfigVariable]') AND name = N'RollbackValue')
 BEGIN
 	ALTER TABLE [ssis].[ConfigVariable] DROP COLUMN  [RollbackValue]
