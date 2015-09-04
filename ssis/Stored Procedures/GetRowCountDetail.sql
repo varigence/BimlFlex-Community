@@ -20,6 +20,4 @@ SELECT	 [RowCountID]
 FROM	[ssis].[RowCount]
 WHERE	ExecutionID= @ExecutionID
 
-RETURN 0
-
 GO

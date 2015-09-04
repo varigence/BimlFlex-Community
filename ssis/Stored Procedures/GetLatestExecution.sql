@@ -8,7 +8,7 @@
 CREATE PROCEDURE [ssis].[GetLatestExecution]
 AS
 BEGIN
-	SELECT	 [PackageName] AS [ObjectName]
+	SELECT	 [PackageName]
 			,MAX(e.[ExecutionID]) AS [ParentExecutionID]
 			,MAX(e.[ServerExecutionID]) AS [ServerExecutionID] 
 	FROM	[ssis].[Execution] e

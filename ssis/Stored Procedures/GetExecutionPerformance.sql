@@ -22,16 +22,9 @@ SELECT e.[ExecutionID]
       ,e.[NextLoadStatus]
       ,CONVERT(DATETIME, e.[StartTime]) AS [StartTime]
       ,CONVERT(DATETIME, e.[EndTime]) AS [EndTime]
-	  ,ROUND(CONVERT(FLOAT, DATEDIFF(millisecond, [StartTime], 
-                                  ISNULL([EndTime], Sysdatetimeoffset()))) / 
-             1000, 2) AS [Duration]
-  FROM [BimlCatalog].[ssis].[Execution] e
+	  ,RIGHT('0' + CONVERT(varchar(5) ,DATEDIFF(s, e.StartTime, e.EndTime) / 3600), 2) + ':' + RIGHT('0' + CONVERT(VARCHAR(5), DATEDIFF(s, e.StartTime, e.EndTime) % 3600 / 60), 2) + ':' + RIGHT('0' + CONVERT(varchar(5), DATEDIFF(s, e.StartTime, e.EndTime) % 60), 2) AS Duration  
+FROM [BimlCatalog].[ssis].[Execution] e
   JOIN [BimlCatalog].[ssis].[Package] p ON e.[PackageID] = p.[PackageID]
   WHERE [ExecutionID] = @ExecutionID 
-
-RETURN 0
-
-
-
 
 GO

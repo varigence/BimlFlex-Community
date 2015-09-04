@@ -14,8 +14,7 @@ DECLARE @FinalPackageName VARCHAR(100)
 DECLARE @PackageNameLength INT 
 
 SET @PackageNameLength = Len(@StringPackageName) 
-SET @FinalPackageName = Substring(@StringPackageName, 7, @PackageNameLength) 
-                        + '.dtsx' 
+SET @FinalPackageName = @StringPackageName + '.dtsx' 
 
 SELECT [executable_id], 
        [execution_id], 
@@ -25,11 +24,8 @@ SELECT [executable_id],
        [package_path] 
 FROM   [SSISDB].[catalog].[executables] 
 WHERE  [execution_id] = @ServerExecutionID 
-       AND executable_name <> Substring(@StringPackageName, 7, 
-                              @PackageNameLength) 
+       AND executable_name <> @StringPackageName
        AND Charindex(@FinalPackageName, package_name) > 0 
-
-RETURN 0
 
 
 GO
