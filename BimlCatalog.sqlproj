@@ -111,6 +111,9 @@
     <Build Include="ssis\Stored Procedures\LogBatchExecution.sql" />
     <Build Include="ssis\Stored Procedures\LogExecutionError.sql" />
     <Build Include="ssis\Stored Procedures\LogExecutionEnd.sql" />
+    <Build Include="dbo\User Defined Types\InputColumnInfo.sql" />
+    <Build Include="ssis\Tables\ColumnInfo.sql" />
+    <Build Include="ssis\Stored Procedures\LogColumnInfo.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
