@@ -28,6 +28,7 @@ LEFT OUTER JOIN [ssis].[RowCount] AS rc
 LEFT OUTER JOIN [ssis].[AuditRow] AS ar 
 	ON	e.ExecutionID = ar.ExecutionID
 WHERE	e.ExecutionID = @ExecutionID
+OR		e.ParentExecutionID = @ExecutionID
 GROUP BY e.ExecutionID
 		,e.ParentExecutionID
 		,e.ServerExecutionID
