@@ -98,7 +98,6 @@
     <Build Include="ssis\Stored Procedures\GetBatchExecutions.sql" />
     <Build Include="ssis\Stored Procedures\GetBatchPackages.sql" />
     <Build Include="ssis\Stored Procedures\GetLatestExecution.sql" />
-    <Build Include="ssis\Stored Procedures\GetBatchExecutionDetail.sql" />
     <Build Include="ssis\Stored Procedures\GetPackageExecution.sql" />
     <Build Include="ssis\Stored Procedures\GetEventMessages.sql" />
     <Build Include="ssis\Stored Procedures\GetRowCountDetail.sql" />
@@ -114,6 +113,7 @@
     <Build Include="dbo\User Defined Types\InputColumnInfo.sql" />
     <Build Include="ssis\Tables\ColumnInfo.sql" />
     <Build Include="ssis\Stored Procedures\LogColumnInfo.sql" />
+    <Build Include="ssis\Stored Procedures\GetBatchExecutionPackages.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />

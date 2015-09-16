@@ -6,14 +6,14 @@
 # You may obtain a copy of the License by contacting support@varigence.com.
 */
 CREATE PROCEDURE [ssis].[GetAuditRowDetails]
-	@AuditRowID VARCHAR(25)
+	@ExecutionID	INT
 AS
 
 SELECT [RowID]
 	,[ColumnName]
 	,[ColumnValue]
-FROM	[ssis].[AuditRowData]
-WHERE	[AuditRowID] = @AuditRowID
-
-RETURN 0
+FROM	[ssis].[AuditRow] ar
+INNER JOIN 	[ssis].[AuditRowData] ard
+	ON	ar.[AuditRowID] = ard.[AuditRowID]
+WHERE	ar.[ExecutionID] = @ExecutionID
 

@@ -1,6 +1,6 @@
-﻿CREATE PROCEDURE [dbo].[GetBatchExecutionPackages]
+﻿CREATE PROCEDURE [ssis].[GetBatchExecutionPackages]
 	-- Add the parameters for the stored procedure here
-	@ServerExecutionID VARCHAR(30)
+	@ExecutionID VARCHAR(30)
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -29,8 +29,8 @@ LEFT OUTER JOIN
 	ssis.[RowCount] AS rc ON e.ExecutionID = rc.ExecutionID 
 LEFT OUTER JOIN
 	ssis.AuditRow AS ar ON e.ExecutionID = ar.ExecutionID
-WHERE e.ServerExecutionID = @ServerExecutionID
-	AND e.ParentExecutionID <> -1
+WHERE e.ExecutionID = @ExecutionID
+	--AND e.ParentExecutionID <> -1
 GROUP BY e.ExecutionID
 	,e.ParentExecutionID
 	,e.ServerExecutionID
