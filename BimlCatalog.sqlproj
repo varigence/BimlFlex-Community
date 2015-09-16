@@ -114,6 +114,7 @@
     <Build Include="ssis\Tables\ColumnInfo.sql" />
     <Build Include="ssis\Stored Procedures\LogColumnInfo.sql" />
     <Build Include="ssis\Stored Procedures\GetBatchExecutionPackages.sql" />
+    <Build Include="ssis\Stored Procedures\GetExecutionErrors.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
