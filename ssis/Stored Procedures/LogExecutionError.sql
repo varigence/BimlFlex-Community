@@ -10,7 +10,7 @@ CREATE PROCEDURE [ssis].[LogExecutionError]
 	@IsBatch			BIT,
 	@ErrorCode			INT,
 	@ErrorDescription	NVARCHAR(MAX)
-WITH ENCRYPTION
+--WITH ENCRYPTION
 AS
 SET NOCOUNT ON
 BEGIN TRY
@@ -26,7 +26,7 @@ BEGIN TRY
 			WHERE	[ParentExecutionID] = @ExecutionID
 
 			UPDATE	cv
-			SET		[VariableValue] = [PreviousValue]
+			SET		[VariableValue] = ISNULL([PreviousValue], [VariableValue])
 			FROM	[ssis].[Execution] e
 			INNER JOIN [ssis].[ConfigVariable] cv
 				ON	e.[ExecutionID] = cv.[ExecutionID]
