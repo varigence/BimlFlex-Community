@@ -22,17 +22,18 @@ BEGIN TRY
 		IF @IsBatch = 1
 		BEGIN
 			UPDATE	[ssis].[Execution]
-			SET		[NextLoadStatus] = 'R'
+			SET		[NextLoadStatus] = 'C'
 			WHERE	[ParentExecutionID] = @ExecutionID
+			AND		[ExecutionStatus] = 'S'
 
-			UPDATE	cv
-			SET		[VariableValue] = ISNULL([PreviousValue], [VariableValue])
-			FROM	[ssis].[Execution] e
-			INNER JOIN [ssis].[ConfigVariable] cv
-				ON	e.[ExecutionID] = cv.[ExecutionID]
-			WHERE	e.[ParentExecutionID] = @ExecutionID
+			--UPDATE	cv
+			--SET		[VariableValue] = ISNULL([PreviousValue], [VariableValue])
+			--FROM	[ssis].[Execution] e
+			--INNER JOIN [ssis].[ConfigVariable] cv
+			--	ON	e.[ExecutionID] = cv.[ExecutionID]
+			--WHERE	e.[ParentExecutionID] = @ExecutionID
 		END
-
+	
 		UPDATE	[ssis].[Execution]
 		SET		 [ExecutionStatus] = 'F' -- Failed
 				,[NextLoadStatus] = 'R'
