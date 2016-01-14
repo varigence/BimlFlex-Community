@@ -16,18 +16,20 @@ SET NOCOUNT ON
 BEGIN TRY
 	DECLARE @PreviousValue			VARCHAR(200)
 
-	IF UPPER(ISNULL(@VariableValue, '')) IN ('', 'NULL', '0', '1900-01-01') SET @VariableValue = NULL; 
-
 	SELECT	 @PreviousValue = [VariableValue]
 	FROM	[ssis].[ConfigVariable]
 	WHERE	[SystemName] = @SystemName
 	AND		[ObjectName] = @ObjectName
 	AND		[VariableName] = @VariableName	
+
+	IF UPPER(ISNULL(@VariableValue, '')) IN ('', 'NULL', '0', '1900-01-01') 
+		AND UPPER(ISNULL(@PreviousValue, '')) NOT IN ('', 'NULL', '0', '1900-01-01') 
+		SET @VariableValue = @PreviousValue; 
 	
 	-- Write test for variable casting
 	--IF TRY_PARSE(@PreviousValue AS DATETIME2, )
-	IF (ISNULL(@PreviousValue, '') < ISNULL(@VariableValue, ''))
-	BEGIN
+	--IF (ISNULL(@PreviousValue, '') < ISNULL(@VariableValue, ''))
+	--BEGIN
 		UPDATE	[ssis].[ConfigVariable]
 		SET		 [VariableValue] = ISNULL(@VariableValue, [VariableValue])
 				,[ExecutionID] = @ExecutionID
@@ -35,7 +37,7 @@ BEGIN TRY
 		WHERE	[SystemName] = @SystemName
 		AND		[ObjectName] = @ObjectName
 		AND		[VariableName] = @VariableName
-	END
+	--END
 
 	--RETURN(0);
 END TRY
