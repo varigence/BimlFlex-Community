@@ -20,6 +20,13 @@ BEGIN TRY
 				,[NextLoadStatus] = 'P'
 				,[EndTime] = GETDATE()
 		WHERE	[ExecutionID] = @ExecutionID
+
+		IF @IsBatch = 1
+		BEGIN
+			UPDATE	[ssis].[Execution]
+			SET		[NextLoadStatus] = 'P'
+			WHERE	[ParentExecutionID] = @ExecutionID
+		END
 	COMMIT
 END TRY
 

@@ -91,7 +91,6 @@
     <Build Include="ssis\Tables\Execution.sql" />
     <Build Include="ssis\Stored Procedures\LogExecution.sql" />
     <Build Include="ssis\Tables\ConfigVariable.sql" />
-    <Build Include="dbo\Tables\sysssislog.sql" />
     <Build Include="ssis\Stored Procedures\SetConfigVariable.sql" />
     <Build Include="ssis\Stored Procedures\GetConfigVariable.sql" />
     <Build Include="ssis\Tables\Package.sql" />
