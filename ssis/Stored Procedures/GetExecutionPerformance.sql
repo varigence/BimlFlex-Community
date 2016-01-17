@@ -23,8 +23,8 @@ SELECT e.[ExecutionID]
       ,CONVERT(DATETIME, e.[StartTime]) AS [StartTime]
       ,CONVERT(DATETIME, e.[EndTime]) AS [EndTime]
 	  ,RIGHT('0' + CONVERT(varchar(5) ,DATEDIFF(s, e.StartTime, e.EndTime) / 3600), 2) + ':' + RIGHT('0' + CONVERT(VARCHAR(5), DATEDIFF(s, e.StartTime, e.EndTime) % 3600 / 60), 2) + ':' + RIGHT('0' + CONVERT(varchar(5), DATEDIFF(s, e.StartTime, e.EndTime) % 60), 2) AS Duration  
-FROM [BimlCatalog].[ssis].[Execution] e
-  JOIN [BimlCatalog].[ssis].[Package] p ON e.[PackageID] = p.[PackageID]
-  WHERE [ExecutionID] = @ExecutionID 
+FROM	[ssis].[Execution] e
+INNER JOIN [ssis].[Package] p ON e.[PackageID] = p.[PackageID]
+WHERE [ExecutionID] = @ExecutionID 
 
 GO

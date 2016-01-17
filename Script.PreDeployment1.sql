@@ -47,7 +47,7 @@ END
 GO
 
 
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sysssislog]') AND CONVERT(INT, LEFT(CONVERT(VARCHAR, SERVERPROPERTY('productversion')), 2)) < 11)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sysssislog]'))
 	CREATE TABLE [dbo].[sysssislog] (
 		[id]          INT              IDENTITY (1, 1) NOT NULL,
 		[event]       [sysname]        NOT NULL,
@@ -65,6 +65,6 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sy
 	);
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sysssislog]') AND CONVERT(INT, LEFT(CONVERT(VARCHAR, SERVERPROPERTY('productversion')), 2)) >= 11)
-	DROP TABLE [dbo].[sysssislog]
-GO
+--IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sysssislog]') AND CONVERT(INT, LEFT(CONVERT(VARCHAR, SERVERPROPERTY('productversion')), 2)) >= 11)
+--	DROP TABLE [dbo].[sysssislog]
+--GO
