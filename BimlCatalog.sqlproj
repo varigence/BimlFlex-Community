@@ -115,11 +115,15 @@
     <Build Include="ssis\Stored Procedures\GetBatchExecutionPackages.sql" />
     <Build Include="ssis\Stored Procedures\GetExecutionErrors.sql" />
     <Build Include="ssis\Stored Procedures\SetRollbackBatch.sql" />
+    <Build Include="dbo\Tables\sysssislog.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="Script.PreDeployment1.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
 </Project>
