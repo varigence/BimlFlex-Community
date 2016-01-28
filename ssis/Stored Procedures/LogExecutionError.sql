@@ -10,7 +10,7 @@ CREATE PROCEDURE [ssis].[LogExecutionError]
 	@IsBatch			BIT,
 	@ErrorCode			INT,
 	@ErrorDescription	NVARCHAR(MAX)
---WITH ENCRYPTION
+----WITH ENCRYPTION
 AS
 SET NOCOUNT ON
 BEGIN TRY
