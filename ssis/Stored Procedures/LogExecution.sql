@@ -14,8 +14,8 @@ CREATE PROCEDURE [ssis].[LogExecution](
 	@ParentExecutionID		[bigint],
 	@ServerExecutionID		[bigint],
 	@ExecutionID			[bigint]        = NULL OUTPUT,
-	@ExecutionStatus		[char](1)		= NULL OUTPUT,
-	@NextLoadStatus			[char](1)		= NULL OUTPUT,
+	@ExecutionStatus		[varchar](1)		= NULL OUTPUT,
+	@NextLoadStatus			[varchar](1)		= NULL OUTPUT,
 	@LastExecutionID		[bigint]        = NULL OUTPUT
 ) 
 AS 
@@ -23,8 +23,8 @@ AS
 DECLARE	 @PackageID				INT
 		,@ParentPackageID		INT
 		,@CurrentExecutionID	BIGINT
-		,@LastNextLoadStatus	CHAR(1)
-		,@LastExecutionStatus	CHAR(1)
+		,@LastNextLoadStatus	VARCHAR(1)
+		,@LastExecutionStatus	VARCHAR(1)
 		,@IsEnabled				BIT
 
 SELECT  @ExecutionID = MAX([ExecutionID])

@@ -19,7 +19,7 @@ DECLARE  @QualifiedToTable	NVARCHAR(512)
 		,@QualifiedTable	NVARCHAR(512)
 		,@BackupTable		NVARCHAR(512)
 		,@SqlExec			NVARCHAR(MAX)
-		,@NL				CHAR(2)			= CHAR(13) + CHAR(10)
+		,@NL				VARCHAR(2)			= VARCHAR(13) + VARCHAR(10)
 		,@RC				INT
 
 SET		@ToSchema = ISNULL(@ToSchema, 'copy')

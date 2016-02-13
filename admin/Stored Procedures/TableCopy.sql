@@ -21,10 +21,10 @@ BEGIN
 			,@SqlColumnList			VARCHAR(MAX)
 			,@SqlColumnsSelect		VARCHAR(MAX)
 			,@SqlExec				NVARCHAR(MAX)
-			,@NL					CHAR(2)
+			,@NL					VARCHAR(2)
 			,@RC					INT
 
-	SET		@NL = CHAR(13) + CHAR(10)
+	SET		@NL = VARCHAR(13) + VARCHAR(10)
 	SET		@ToSchema = ISNULL(@ToSchema, 'copy')
 	SET		@ToTable = ISNULL(@ToTable, @Table)
 	SELECT	@QualifiedToTable = '[' + @Catalog + '].[' + @ToSchema + '].[' + @ToTable + ']'
@@ -101,7 +101,7 @@ BEGIN
 									WHEN 'varbinary' THEN 'varbinary(' + @ToMaxLength + ')'
 									WHEN 'varchar' THEN 'varchar(' + @ToMaxLength + ')'
 									WHEN 'binary' THEN 'binary(' + @ToMaxLength + ')'
-									WHEN 'char' THEN 'char(' + @ToMaxLength + ')'
+									WHEN 'VARCHAR' THEN 'VARCHAR(' + @ToMaxLength + ')'
 									WHEN 'nvarchar' THEN 'nvarchar(' + @ToMaxLength + ')'
 									WHEN 'nchar' THEN 'nchar(' + @ToMaxLength + ')'
 									ELSE @ToDataType

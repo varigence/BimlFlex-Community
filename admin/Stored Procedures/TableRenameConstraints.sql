@@ -14,10 +14,10 @@ SET NOCOUNT ON
 BEGIN
 	DECLARE  @QualifiedTable		NVARCHAR(500)
 			,@SqlExec				NVARCHAR(MAX)
-			,@NL					CHAR(2)
+			,@NL					VARCHAR(2)
 			,@RC					INT
 
-	SET		@NL = CHAR(13) + CHAR(10);
+	SET		@NL = VARCHAR(13) + VARCHAR(10);
 	SELECT	@QualifiedTable = '[' + @Catalog + '].[' + @Schema + '].[' + @Table + ']';
 
 	DECLARE @tblRename TABLE([SqlExec]	NVARCHAR(MAX));

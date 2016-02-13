@@ -15,10 +15,10 @@ DECLARE  @tableName		VARCHAR(128) = 'ConfigVariable'
 		,@bit			INT
 		,@field			INT
 		,@maxfield		INT
-		,@char			INT
+		,@VARCHAR			INT
 		,@fieldname		VARCHAR(128)
 		,@sql			VARCHAR(2000) 
-		,@auditType		CHAR(1)	= 'I'
+		,@auditType		VARCHAR(1)	= 'I'
 
 -- AuditauditType
 IF NOT EXISTS (SELECT 1 FROM inserted) 
@@ -46,8 +46,8 @@ BEGIN
 
 	SELECT @bit = (@field - 1 )% 8 + 1
 	SELECT @bit = POWER(2,@bit - 1)
-	SELECT @char = ((@field - 1) / 8) + 1
-	IF SUBSTRING(COLUMNS_UPDATED(),@char, 1) & @bit > 0 OR @auditType IN ('I','D')
+	SELECT @VARCHAR = ((@field - 1) / 8) + 1
+	IF SUBSTRING(COLUMNS_UPDATED(),@VARCHAR, 1) & @bit > 0 OR @auditType IN ('I','D')
 	BEGIN
 		SELECT	@fieldname = COLUMN_NAME 
 		FROM	INFORMATION_SCHEMA.COLUMNS 
