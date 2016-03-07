@@ -17,7 +17,7 @@ BEGIN
 			,@NL					VARCHAR(2)
 			,@RC					INT
 
-	SET		@NL = VARCHAR(13) + VARCHAR(10);
+	SET		@NL = CHAR(13) + CHAR(10);
 	SELECT	@QualifiedTable = '[' + @Catalog + '].[' + @Schema + '].[' + @Table + ']';
 
 	DECLARE @tblRename TABLE([SqlExec]	NVARCHAR(MAX));
