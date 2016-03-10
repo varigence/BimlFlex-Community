@@ -15,7 +15,7 @@ AS
 SET NOCOUNT ON
 DECLARE  @DiffCount		INT
 		,@SqlExec		NVARCHAR(MAX)
-		,@NL			VARCHAR(2)			= VARCHAR(13) + VARCHAR(10)
+		,@NL			VARCHAR(2)			= CHAR(13) + CHAR(10)
 
 CREATE TABLE #SourceColumns(
 	[TABLE_CATALOG]				[nvarchar](128),
