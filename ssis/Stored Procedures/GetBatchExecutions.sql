@@ -10,7 +10,10 @@ CREATE PROCEDURE [ssis].[GetBatchExecutions]
 	@EndDate VARCHAR(25)
 AS
 
-SELECT	 TOP 10 
+SET @EndDate = ISNULL(@EndDate, GETDATE())
+SET @StartDate = ISNULL(@StartDate, DATEADD(DD, -7 , @EndDate))
+
+SELECT	 TOP 20
 		 e.[ExecutionID]
 		,e.[ServerExecutionID] AS [SSISExecutionID]
 		,e.[ParentExecutionID]
