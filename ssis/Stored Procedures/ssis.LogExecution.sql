@@ -26,6 +26,8 @@ DECLARE	 @PackageID				INT
 		,@LastNextLoadStatus	VARCHAR(1)
 		,@LastExecutionStatus	VARCHAR(1)
 		,@IsEnabled				BIT
+		,@PackageRetryCount		INT
+		
 
 SELECT  @ExecutionID = MAX([ExecutionID])
 FROM    [ssis].[Execution]
@@ -68,6 +70,8 @@ BEGIN
 			FROM	[ssis].[Execution]
 			WHERE	[PackageID] = @PackageID
 		)
+
+
 	-- If the package is currently executing or disabled abort the process.
 	IF @IsEnabled = 0
 	BEGIN
@@ -76,8 +80,23 @@ BEGIN
 	END
 	ELSE IF @CurrentExecutionID IS NOT NULL -- Currently Executing
 	BEGIN
-		SELECT @ExecutionStatus = 'A' -- Abort this instance
-		SELECT @NextLoadStatus = 'P'
+		SELECT	@PackageRetryCount = ISNULL([PackageRetryCount], 0) + 1
+		FROM	[ssis].[Package]
+		WHERE	[PackageID] = @PackageID
+		IF @PackageRetryCount >= (SELECT TOP 1 TRY_PARSE([ConfigurationValue] AS INT) FROM [admin].[Configurations] WHERE [ConfigurationCode] = 'BimlFlex' AND [ConfigurationKey] = 'PackageRetryLimit')
+		BEGIN
+			SET	@PackageRetryCount = 0
+			SELECT	@ExecutionStatus = 'E' -- Execution Started
+			SELECT	@NextLoadStatus = 'C' -- Skip Next Run. Gets reset based on completion or failure.
+		END
+		ELSE
+		BEGIN
+			SELECT @ExecutionStatus = 'A' -- Abort this instance
+			SELECT @NextLoadStatus = 'P'
+		END
+		UPDATE	[ssis].[Package] 
+		SET		[PackageRetryCount] = @PackageRetryCount 
+		WHERE	[PackageID] = @PackageID
 	END
 	ELSE IF ISNULL(@LastNextLoadStatus, 'P') = 'R' -- Failed - Rollback
 	BEGIN
@@ -140,3 +159,42 @@ END
 SELECT	@LastExecutionID = ISNULL(@LastExecutionID, @ExecutionID)
 SELECT	@ExecutionStatus = ISNULL(@ExecutionStatus, 'C')
 SELECT	@NextLoadStatus = ISNULL(@NextLoadStatus, 'C')
+
+/*
+
+
+UPDATE	pe
+SET		[ExecutionStatus] = 'A'
+		,[NextLoadStatus] = 'P'
+FROM	[ssis].[Execution] pe
+INNER JOIN 
+(
+SELECT	MAX([ExecutionID]) AS [ExecutionID]
+FROM	[ssis].[Execution] e
+INNER JOIN [ssis].[Package] p
+	ON	e.[PackageID] = p.[PackageID]
+WHERE	p.[PackageName] = 'SB_EOD_Batch'
+) e
+	ON	pe.[ExecutionID]  = e.[ExecutionID]
+	OR	pe.[ParentExecutionID] = e.[ExecutionID]
+
+SELECT	pe.*
+
+UPDATE	pe
+SET		[ExecutionStatus] = 'A'
+		,[NextLoadStatus] = 'P'
+FROM	[ssis].[Execution] pe
+INNER JOIN 
+(
+
+SELECT	e.[ExecutionID]
+FROM	[ssis].[Execution] e
+INNER JOIN [ssis].[Package] p
+	ON	e.[PackageID] = p.[PackageID]
+WHERE	[ExecutionStatus] = 'E' 
+) e
+	ON	pe.[ExecutionID]  = e.[ExecutionID]
+	OR	pe.[ParentExecutionID] = e.[ExecutionID]
+	*/
+
+GO
