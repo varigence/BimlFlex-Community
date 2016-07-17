@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{a87b19b1-75b6-433e-9c8c-e9425c75429a}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql120DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql110DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
@@ -75,19 +75,18 @@
     <Folder Include="ssis\" />
     <Folder Include="ssis\Tables\" />
     <Folder Include="ssis\Stored Procedures\" />
-    <Folder Include="dbo\" />
-    <Folder Include="dbo\User Defined Types\" />
     <Folder Include="Security\" />
     <Folder Include="admin\" />
     <Folder Include="admin\Functions\" />
     <Folder Include="admin\Stored Procedures\" />
-    <Folder Include="dbo\Tables\" />
     <Folder Include="ssis\Triggers" />
     <Folder Include="admin\Tables" />
     <Folder Include="StaticData" />
     <Folder Include="StaticData\Entities" />
     <Folder Include="rpt" />
     <Folder Include="rpt\Stored Procedures" />
+    <Folder Include="dbo" />
+    <Folder Include="dbo\User Defined Types" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="ssis\Tables\ssis.AuditRowData.sql" />
@@ -95,7 +94,6 @@
     <Build Include="ssis\Tables\ssis.RowCount.sql" />
     <Build Include="ssis\Stored Procedures\ssis.LogAuditRow.sql" />
     <Build Include="ssis\Stored Procedures\ssis.LogRowCount.sql" />
-    <Build Include="dbo\User Defined Types\AuditRowDataType.sql" />
     <Build Include="Security\ssis.sql" />
     <Build Include="admin\Functions\GetForeignKeyStatement.sql" />
     <Build Include="admin\Functions\GetColumnListStatement.sql" />
@@ -115,11 +113,9 @@
     <Build Include="ssis\Stored Procedures\ssis.LogBatchExecution.sql" />
     <Build Include="ssis\Stored Procedures\ssis.LogExecutionError.sql" />
     <Build Include="ssis\Stored Procedures\ssis.LogExecutionEnd.sql" />
-    <Build Include="dbo\User Defined Types\InputColumnInfo.sql" />
     <Build Include="ssis\Tables\ssis.ColumnInfo.sql" />
     <Build Include="ssis\Stored Procedures\ssis.LogColumnInfo.sql" />
     <Build Include="ssis\Stored Procedures\ssis.SetRollbackBatch.sql" />
-    <Build Include="dbo\Tables\sysssislog.sql" />
     <Build Include="admin\Tables\Configurations.sql" />
     <None Include="StaticData\Entities\Configurations.sql" />
     <Build Include="admin\Tables\Diagnostics.sql" />
@@ -135,6 +131,8 @@
     <Build Include="rpt\Stored Procedures\rpt.GetLatestExecution.sql" />
     <Build Include="rpt\Stored Procedures\rpt.GetPackageExecution.sql" />
     <Build Include="rpt\Stored Procedures\rpt.GetRowCountDetail.sql" />
+    <Build Include="dbo\User Defined Types\AuditRowDataType.sql" />
+    <Build Include="dbo\User Defined Types\InputColumnInfo.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />

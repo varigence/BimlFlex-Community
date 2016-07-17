@@ -14,9 +14,10 @@ CREATE PROCEDURE [ssis].[LogExecution](
 	@ParentExecutionID		[bigint],
 	@ServerExecutionID		[bigint],
 	@ExecutionID			[bigint]        = NULL OUTPUT,
-	@ExecutionStatus		[varchar](1)		= NULL OUTPUT,
-	@NextLoadStatus			[varchar](1)		= NULL OUTPUT,
-	@LastExecutionID		[bigint]        = NULL OUTPUT
+	@ExecutionStatus		[varchar](1)	= NULL OUTPUT,
+	@NextLoadStatus			[varchar](1)	= NULL OUTPUT,
+	@LastExecutionID		[bigint]        = NULL OUTPUT,
+	@BatchStartTime			[datetime]		= NULL OUTPUT
 ) 
 AS 
 
@@ -27,7 +28,6 @@ DECLARE	 @PackageID				INT
 		,@LastExecutionStatus	VARCHAR(1)
 		,@IsEnabled				BIT
 		,@PackageRetryCount		INT
-		
 
 SELECT  @ExecutionID = MAX([ExecutionID])
 FROM    [ssis].[Execution]
@@ -71,7 +71,6 @@ BEGIN
 			WHERE	[PackageID] = @PackageID
 		)
 
-
 	-- If the package is currently executing or disabled abort the process.
 	IF @IsEnabled = 0
 	BEGIN
@@ -113,9 +112,18 @@ BEGIN
 		SELECT	@ExecutionStatus = 'E' -- Execution Started
 		SELECT	@NextLoadStatus = 'C' -- Skip Next Run. Gets reset based on completion or failure.
 	END
-	SELECT	@LastExecutionID
-	SELECT	@ExecutionStatus
-	SELECT	@NextLoadStatus
+
+	
+	IF ISNULL(@ParentExecutionID, -1) <> -1
+	BEGIN
+		SELECT	 @ParentPackageID = MAX([PackageID])
+				,@BatchStartTime = MAX([BatchStartTime])
+		FROM	[ssis].[Execution] 
+		WHERE	[ExecutionID] = @ParentExecutionID
+	END
+
+	SET	@BatchStartTime = ISNULL(@BatchStartTime, GETDATE())
+
 	INSERT INTO [ssis].[Execution]
 			([ParentExecutionID]
 			,[ExecutionGUID]
@@ -124,7 +132,9 @@ BEGIN
 			,[PackageID]
 			,[ServerExecutionID]
 			,[ExecutionStatus]
-			,[NextLoadStatus])
+			,[NextLoadStatus]
+			,[StartTime]
+			,[BatchStartTime])
 	VALUES	(ISNULL(@ParentExecutionID, -1)
 			,REPLACE(REPLACE(@ExecutionGUID, '{', ''), '}', '')
 			,REPLACE(REPLACE(@SourceGUID, '{', ''), '}', '')
@@ -132,10 +142,11 @@ BEGIN
 			,@PackageID
 			,@ServerExecutionID
 			,@ExecutionStatus
-			,@NextLoadStatus);
+			,@NextLoadStatus
+			,CASE WHEN ISNULL(@ParentExecutionID, -1) = -1 THEN @BatchStartTime ELSE GETDATE() END
+			,@BatchStartTime);
 
 	SELECT  @ExecutionID = SCOPE_IDENTITY();
-	
 
 	IF ISNULL(@ParentExecutionID, -1) <> -1
 	BEGIN
@@ -159,6 +170,7 @@ END
 SELECT	@LastExecutionID = ISNULL(@LastExecutionID, @ExecutionID)
 SELECT	@ExecutionStatus = ISNULL(@ExecutionStatus, 'C')
 SELECT	@NextLoadStatus = ISNULL(@NextLoadStatus, 'C')
+SELECT	@BatchStartTime = ISNULL(@BatchStartTime, GETDATE())
 
 /*
 

@@ -17,6 +17,7 @@ CREATE TABLE [ssis].[Execution](
 	[NextLoadStatus]			VARCHAR(1)			NULL,
 	[StartTime]					DATETIMEOFFSET(7)	CONSTRAINT [DF_ssisExecution_StartTime] DEFAULT (GETDATE()) NULL,
 	[EndTime]					DATETIMEOFFSET(7)	NULL,
+	[BatchStartTime]			DATETIME			NULL,
 	[Duration]					AS					DATEDIFF(SS, [StartTime], [EndTime]) PERSISTED
     CONSTRAINT [PK_ssis_ServerExecution] PRIMARY KEY CLUSTERED ([ExecutionID] DESC)
 );
