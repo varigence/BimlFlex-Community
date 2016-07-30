@@ -82,7 +82,7 @@ BEGIN
 		SELECT	@PackageRetryCount = ISNULL([PackageRetryCount], 0) + 1
 		FROM	[ssis].[Package]
 		WHERE	[PackageID] = @PackageID
-		IF @PackageRetryCount >= (SELECT TOP 1 TRY_PARSE([ConfigurationValue] AS INT) FROM [admin].[Configurations] WHERE [ConfigurationCode] = 'BimlFlex' AND [ConfigurationKey] = 'PackageRetryLimit')
+		IF @PackageRetryCount >= (SELECT TOP 1 CONVERT(INT, [ConfigurationValue]) FROM [admin].[Configurations] WHERE [ConfigurationCode] = 'BimlFlex' AND [ConfigurationKey] = 'PackageRetryLimit')
 		BEGIN
 			SET	@PackageRetryCount = 0
 			SELECT	@ExecutionStatus = 'E' -- Execution Started
