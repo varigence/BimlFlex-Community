@@ -17,22 +17,58 @@ CREATE PROCEDURE [ssis].[LogRowCount](
 AS
 BEGIN TRY
 	
-    INSERT INTO [ssis].[RowCount]
-        ([ExecutionID]
-        ,[ComponentName]
-        ,[ObjectName]
-        ,[CountType]
-        ,[RowCount]
-		,[ColumnSum]
-		,[ColumnName])
-    VALUES
-        (@ExecutionID
-        ,@ComponentName
-        ,@ObjectName
-        ,@CountType
-        ,@RowCount
-		,@ColumnSum
-		,@ColumnName);
+  --  INSERT INTO [ssis].[RowCount]
+  --      ([ExecutionID]
+  --      ,[ComponentName]
+  --      ,[ObjectName]
+  --      ,[CountType]
+  --      ,[RowCount]
+		--,[ColumnSum]
+		--,[ColumnName])
+  --  VALUES
+  --      (@ExecutionID
+  --      ,@ComponentName
+  --      ,@ObjectName
+  --      ,@CountType
+  --      ,@RowCount
+		--,@ColumnSum
+		--,@ColumnName);
+
+	MERGE [ssis].[RowCount] AS TARGET
+	USING 
+	(
+		SELECT	 @ExecutionID AS [ExecutionID]
+				,@ComponentName AS [ComponentName]
+				,@ObjectName AS [ObjectName]
+				,@CountType AS [CountType]
+				,@RowCount AS [RowCount]
+				,@ColumnSum AS [ColumnSum]
+				,@ColumnName AS [ColumnName]
+	) AS SOURCE
+		ON	TARGET.[ExecutionID] = SOURCE.[ExecutionID] 
+		AND	TARGET.[ComponentName] = SOURCE.[ComponentName] COLLATE Latin1_General_CS_AS
+		AND	TARGET.[ObjectName] = SOURCE.[ObjectName] COLLATE Latin1_General_CS_AS
+		AND	TARGET.[CountType] = SOURCE.[CountType] COLLATE Latin1_General_CS_AS
+	WHEN MATCHED THEN 
+		UPDATE 
+		SET		 [RowCount] = SOURCE.[RowCount]
+				,[ColumnSum] = SOURCE.[ColumnSum]
+				,[ColumnName] = SOURCE.[ColumnName]
+	WHEN NOT MATCHED THEN
+		INSERT	([ExecutionID]
+				,[ComponentName]
+				,[ObjectName]
+				,[CountType]
+				,[RowCount]
+				,[ColumnSum]
+				,[ColumnName])
+		VALUES	(SOURCE.[ExecutionID]
+				,SOURCE.[ComponentName]
+				,SOURCE.[ObjectName]
+				,SOURCE.[CountType]
+				,SOURCE.[RowCount]
+				,SOURCE.[ColumnSum]
+				,SOURCE.[ColumnName]);
 
 	RETURN(0);
 END TRY

@@ -92,6 +92,12 @@ BEGIN
 		BEGIN
 			SELECT @ExecutionStatus = 'A' -- Abort this instance
 			SELECT @NextLoadStatus = 'P'
+
+			UPDATE	e
+			SET		[ExecutionStatus] = 'A'
+					,[NextLoadStatus] = 'C'
+			FROM	[ssis].[Execution] e
+			WHERE	[ExecutionID] = @CurrentExecutionID
 		END
 		UPDATE	[ssis].[Package] 
 		SET		[PackageRetryCount] = @PackageRetryCount 

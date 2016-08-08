@@ -38,7 +38,6 @@ BEGIN
 		FROM	@InputColumnInfo
 
 /*
-
 	MERGE [ssis].[ColumnInfo] AS TARGET
 	USING 
 	(	

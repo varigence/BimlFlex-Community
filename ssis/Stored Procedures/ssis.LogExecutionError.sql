@@ -16,7 +16,9 @@ SET NOCOUNT ON
 BEGIN TRY
 	DECLARE @ErrMsg nvarchar(4000), @ErrSeverity int
 
-	DECLARE	@PackageID		INT
+	DECLARE	@SourceGUID				[nvarchar](40),
+			@PackageID				[int],
+			@ServerExecutionID		[bigint]
 
 	BEGIN TRANSACTION
 		IF @IsBatch = 1
@@ -50,6 +52,15 @@ BEGIN TRY
 				,@ExecutionID
 				,@ErrorCode
 				,@ErrorDescription)
+
+		SELECT	 @ServerExecutionID = [ServerExecutionID]
+				,@SourceGUID = [SourceGUID]
+				,@PackageID = [PackageID]
+		FROM	[ssis].[Execution]
+		WHERE	[ExecutionID] = @ExecutionID
+
+		EXEC [ssis].[LogTaskExecution] @SourceGUID, @PackageID, @ExecutionID, @ServerExecutionID
+
 	COMMIT
 END TRY
 

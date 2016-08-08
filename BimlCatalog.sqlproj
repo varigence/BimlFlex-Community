@@ -27,6 +27,7 @@
     <SccProvider>SAK</SccProvider>
     <SccAuxPath>SAK</SccAuxPath>
     <SccLocalPath>SAK</SccLocalPath>
+    <DacVersion>2.5.0.1</DacVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -87,6 +88,8 @@
     <Folder Include="rpt\Stored Procedures" />
     <Folder Include="dbo" />
     <Folder Include="dbo\User Defined Types" />
+    <Folder Include="catalog\" />
+    <Folder Include="catalog\Synonyms\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="ssis\Tables\ssis.AuditRowData.sql" />
@@ -133,6 +136,11 @@
     <Build Include="rpt\Stored Procedures\rpt.GetRowCountDetail.sql" />
     <Build Include="dbo\User Defined Types\AuditRowDataType.sql" />
     <Build Include="dbo\User Defined Types\InputColumnInfo.sql" />
+    <Build Include="ssis\Stored Procedures\LogTaskExecution.sql" />
+    <Build Include="Security\catalog.sql" />
+    <Build Include="catalog\Synonyms\event_messages.sql" />
+    <Build Include="catalog\Synonyms\executable_statistics.sql" />
+    <Build Include="catalog\Synonyms\executables.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
