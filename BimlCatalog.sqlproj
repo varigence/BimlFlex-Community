@@ -136,11 +136,14 @@
     <Build Include="rpt\Stored Procedures\rpt.GetRowCountDetail.sql" />
     <Build Include="dbo\User Defined Types\AuditRowDataType.sql" />
     <Build Include="dbo\User Defined Types\InputColumnInfo.sql" />
-    <Build Include="ssis\Stored Procedures\LogTaskExecution.sql" />
+    <Build Include="ssis\Stored Procedures\ssis.LogTaskExecution.sql" />
     <Build Include="Security\catalog.sql" />
     <Build Include="catalog\Synonyms\event_messages.sql" />
     <Build Include="catalog\Synonyms\executable_statistics.sql" />
     <Build Include="catalog\Synonyms\executables.sql" />
+    <Build Include="ssis\Tables\Task.sql" />
+    <Build Include="ssis\Tables\TaskExecution.sql" />
+    <Build Include="ssis\Tables\TaskExecutionError.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />

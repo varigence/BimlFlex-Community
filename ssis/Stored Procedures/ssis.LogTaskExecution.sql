@@ -6,8 +6,8 @@
 AS
 SET NOCOUNT ON
 
-SELECT	[TaskName]
-		,[TaskExecutionGUID]
+SELECT	 LEFT([TaskName], 1000) COLLATE DATABASE_DEFAULT AS [TaskName]
+		,LEFT(REPLACE(REPLACE([TaskExecutionGUID], '{', ''), '}', ''), 36) COLLATE DATABASE_DEFAULT AS [TaskExecutionGUID]
 		,RANK() OVER (ORDER BY [TaskExecutionGUID], [TaskStartTime] ASC) AS [TaskExecutionOrder]
 		,[TaskExecutionDuration]
 INTO	#TASK_EXECUTION
@@ -24,7 +24,7 @@ FROM
 	INNER JOIN [catalog].[executable_statistics] sces
 		ON	scet.[executable_id] = sces.[executable_id]
 		AND	scet.[execution_id] = sces.[execution_id]
-	WHERE	'{' + @SourceGUID COLLATE SQL_LATIN1_GENERAL_CP1_CI_AS + '}' = sce.[executable_guid]
+	WHERE	'{' + @SourceGUID COLLATE DATABASE_DEFAULT + '}' = sce.[executable_guid]  COLLATE DATABASE_DEFAULT 
 	AND		sce.[execution_id] = @ServerExecutionID
 	AND		scet.[package_path] <> '\Package'
 	AND		LEFT(scet.[executable_name], 5) NOT IN ('FRL -', 'SEQC ', 'SECQ ')
@@ -32,15 +32,15 @@ FROM
 			,scet.[executable_guid]
 ) AS src
 
-SELECT	 scem.[message_source_id] AS [TaskExecutionGUID]
+SELECT	 LEFT(REPLACE(REPLACE(scem.[message_source_id], '{', ''), '}', ''), 36) COLLATE DATABASE_DEFAULT AS [TaskExecutionGUID] 
 		,RANK() OVER (PARTITION BY scem.[message_source_id] ORDER BY scem.[message_time]) AS [TaskErrorOrder]
 		,scem.[message] AS [TaskErrorMessage]
 INTO	#TASK_ERROR
 FROM	[catalog].[event_messages] scem
 WHERE	scem.[operation_id] = @ServerExecutionID
 AND		scem.[event_name] = 'OnError'
-AND		scem.[message_source_id] IN (SELECT	DISTINCT [TaskExecutionGUID] FROM	#TASK_EXECUTION)
-		
+AND		scem.[message_source_id] COLLATE DATABASE_DEFAULT IN (SELECT DISTINCT [TaskExecutionGUID] FROM #TASK_EXECUTION) 
+
 INSERT INTO [ssis].[Task]
 		([PackageID]
 		,[TaskName]
@@ -51,7 +51,7 @@ SELECT	DISTINCT
 		,te.[TaskExecutionOrder]
 FROM	#TASK_EXECUTION te
 LEFT OUTER JOIN [ssis].[Task] t
-	ON	te.[TaskName] = t.[TaskName]
+	ON	te.[TaskName] = t.[TaskName] 
 	AND	t.[PackageID] = @PackageID
 
 INSERT INTO [ssis].[TaskExecution]
@@ -67,7 +67,7 @@ SELECT	 @ExecutionID
 		,te.[TaskExecutionDuration]
 FROM	#TASK_EXECUTION te
 INNER JOIN [ssis].[Task] t
-	ON	te.[TaskName] = t.[TaskName]
+	ON	te.[TaskName] = t.[TaskName] 
 	AND	t.[PackageID] = @PackageID
 
 INSERT INTO [ssis].[TaskExecutionError]
