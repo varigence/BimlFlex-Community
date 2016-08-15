@@ -46,8 +46,8 @@ WITH msgex
                 END                                   AS [execution_path], 
                 msg.[message_code], 
                 info.reference_id 
-         FROM   [SSISDB].[catalog].[event_messages] msg 
-                LEFT JOIN [SSISDB].[catalog].[extended_operation_info] info 
+         FROM   [catalog].[event_messages] msg 
+                LEFT JOIN [catalog].[extended_operation_info] info 
                        ON msg.extended_info_id = info.info_id 
          WHERE  msg.[operation_id] = @ExecutionID 
                 AND msg.message_source_name = @ExecutionName), 
@@ -57,7 +57,7 @@ WITH msgex
                 ref.[environment_folder_name], 
                 ref.[environment_name] 
          FROM   msgex 
-                LEFT JOIN [SSISDB].[catalog].[environment_references] ref 
+                LEFT JOIN [catalog].[environment_references] ref 
                        ON msgex.[reference_id] = ref.[reference_id]), 
      msgenv 
      AS (SELECT *, 
