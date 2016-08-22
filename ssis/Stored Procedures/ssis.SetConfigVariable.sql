@@ -26,6 +26,29 @@ BEGIN TRY
 		AND UPPER(ISNULL(@PreviousValue, '')) NOT IN ('', 'NULL', '0', '1900-01-01') 
 		SET @VariableValue = @PreviousValue; 
 	
+	IF NOT EXISTS (
+		SELECT	1 
+		FROM	[ssis].[ConfigVariable]
+		WHERE	[SystemName] = @SystemName
+		AND		[ObjectName] = @ObjectName
+		AND		[VariableName] = @VariableName)
+	BEGIN
+		INSERT INTO [ssis].[ConfigVariable]
+				([SystemName]
+				,[ObjectName]
+				,[VariableName]
+				,[VariableValue]
+				,[ExecutionID]
+				)
+		VALUES	(@SystemName
+				,@ObjectName
+				,@VariableName
+				,@VariableValue
+				,@ExecutionID
+				)
+	END
+	ELSE
+	BEGIN
 	-- Write test for variable casting
 	--IF TRY_PARSE(@PreviousValue AS DATETIME2, )
 	--IF (ISNULL(@PreviousValue, '') < ISNULL(@VariableValue, ''))
@@ -38,6 +61,7 @@ BEGIN TRY
 		AND		[ObjectName] = @ObjectName
 		AND		[VariableName] = @VariableName
 	--END
+	END
 
 	--RETURN(0);
 END TRY

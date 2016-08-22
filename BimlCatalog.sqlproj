@@ -144,6 +144,7 @@
     <Build Include="ssis\Tables\Task.sql" />
     <Build Include="ssis\Tables\TaskExecution.sql" />
     <Build Include="ssis\Tables\TaskExecutionError.sql" />
+    <Build Include="ssis\Stored Procedures\ssis.GetConfigVariable.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
