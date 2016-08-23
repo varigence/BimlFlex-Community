@@ -126,7 +126,6 @@
     <Build Include="rpt\Stored Procedures\rpt.GetBatchExecutionPackages.sql" />
     <Build Include="rpt\Stored Procedures\rpt.GetBatchExecutions.sql" />
     <Build Include="rpt\Stored Procedures\rpt.GetBatchPackages.sql" />
-    <Build Include="rpt\Stored Procedures\rpt.GetConfigVariable.sql" />
     <Build Include="rpt\Stored Procedures\rpt.GetEventMessages.sql" />
     <Build Include="rpt\Stored Procedures\rpt.GetExecutionErrors.sql" />
     <Build Include="rpt\Stored Procedures\rpt.GetExecutionPerformance.sql" />

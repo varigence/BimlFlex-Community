@@ -1,14 +1,4 @@
-﻿USE [BimlCatalog]
-GO
-
-/****** Object:  StoredProcedure [ssis].[GetConfigVariable]    Script Date: 21/08/2016 7:35:04 PM ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-/*
+﻿/*
 # Copyright (C) 2015 Varigence, Inc.
 #
 # Licensed under the Varigence IP BimlFlex Framework Agreement, Version 1.0 (the "License");
