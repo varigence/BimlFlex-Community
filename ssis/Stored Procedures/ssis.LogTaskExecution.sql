@@ -6,13 +6,27 @@
 AS
 SET NOCOUNT ON
 
+DECLARE	@Sql	NVARCHAR(MAX)
+
+CREATE TABLE #TASK_EXECUTION(
+	[TaskName]				NVARCHAR(1000),
+	[TaskExecutionGUID]		NVARCHAR(36),
+	[TaskExecutionOrder]	BIGINT,
+	[TaskExecutionDuration]	BIGINT
+)
+
+CREATE TABLE #TASK_ERROR(
+	[TaskExecutionGUID]		NVARCHAR(36),
+	[TaskErrorOrder]		BIGINT,
+	[TaskErrorMessage]		NVARCHAR(MAX)
+)
+
 IF (@ServerExecutionID <> -1)
 BEGIN
-	SELECT	 LEFT([TaskName], 1000) COLLATE DATABASE_DEFAULT AS [TaskName]
-			,LEFT(REPLACE(REPLACE([TaskExecutionGUID], '{', ''), '}', ''), 36) COLLATE DATABASE_DEFAULT AS [TaskExecutionGUID]
+	SET		@Sql = 'SELECT	 LEFT([TaskName], 1000) COLLATE DATABASE_DEFAULT AS [TaskName]
+			,LEFT(REPLACE(REPLACE([TaskExecutionGUID], ''{'', ''''), ''}'', ''''), 36) COLLATE DATABASE_DEFAULT AS [TaskExecutionGUID]
 			,RANK() OVER (ORDER BY [TaskExecutionGUID], [TaskStartTime] ASC) AS [TaskExecutionOrder]
 			,[TaskExecutionDuration]
-	INTO	#TASK_EXECUTION
 	FROM 
 	(
 		SELECT	 scet.[executable_name] AS [TaskName]
@@ -26,22 +40,28 @@ BEGIN
 		INNER JOIN [catalog].[executable_statistics] sces
 			ON	scet.[executable_id] = sces.[executable_id]
 			AND	scet.[execution_id] = sces.[execution_id]
-		WHERE	'{' + @SourceGUID COLLATE DATABASE_DEFAULT + '}' = sce.[executable_guid]  COLLATE DATABASE_DEFAULT 
-		AND		sce.[execution_id] = @ServerExecutionID
-		AND		scet.[package_path] <> '\Package'
-		AND		LEFT(scet.[executable_name], 5) NOT IN ('FRL -', 'SEQC ', 'SECQ ')
+		WHERE	''{'' + @SourceGUID COLLATE DATABASE_DEFAULT + ''}'' = sce.[executable_guid]  COLLATE DATABASE_DEFAULT 
+		AND		sce.[execution_id] = ' + @ServerExecutionID + '
+		AND		scet.[package_path] <> ''\Package''
+		AND		LEFT(scet.[executable_name], 5) NOT IN (''FRL -'', ''SEQC '', ''SECQ '')
 		GROUP BY scet.[executable_name]
 				,scet.[executable_guid]
-	) AS src
+	) AS src'
 
-	SELECT	 LEFT(REPLACE(REPLACE(scem.[message_source_id], '{', ''), '}', ''), 36) COLLATE DATABASE_DEFAULT AS [TaskExecutionGUID] 
+	INSERT INTO #TASK_EXECUTION([TaskName], [TaskExecutionGUID], [TaskExecutionOrder], [TaskExecutionDuration])
+	EXEC (@Sql)
+
+	SET		@Sql = 'SELECT	 LEFT(REPLACE(REPLACE(scem.[message_source_id], ''{'', ''''), ''}'', ''''), 36) COLLATE DATABASE_DEFAULT AS [TaskExecutionGUID] 
 			,RANK() OVER (PARTITION BY scem.[message_source_id] ORDER BY scem.[message_time]) AS [TaskErrorOrder]
 			,scem.[message] AS [TaskErrorMessage]
-	INTO	#TASK_ERROR
 	FROM	[catalog].[event_messages] scem
-	WHERE	scem.[operation_id] = @ServerExecutionID
-	AND		scem.[event_name] = 'OnError'
-	AND		scem.[message_source_id] COLLATE DATABASE_DEFAULT IN (SELECT DISTINCT [TaskExecutionGUID] FROM #TASK_EXECUTION) 
+	WHERE	scem.[operation_id] = ' + @ServerExecutionID + '
+	AND		scem.[event_name] = ''OnError''
+	AND		scem.[message_source_id] COLLATE DATABASE_DEFAULT IN (SELECT DISTINCT [TaskExecutionGUID] FROM #TASK_EXECUTION)'
+
+
+	INSERT INTO #TASK_ERROR([TaskExecutionGUID], [TaskErrorOrder], [TaskErrorMessage])
+	EXEC (@Sql)
 
 	INSERT INTO [ssis].[Task]
 			([PackageID]
