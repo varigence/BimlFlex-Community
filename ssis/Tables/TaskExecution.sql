@@ -1,10 +1,10 @@
 ﻿CREATE TABLE [ssis].[TaskExecution](
-	[TaskExecutionID]		[bigint] IDENTITY(1,1)	NOT NULL,
-	[ExecutionID]			[bigint]				NOT NULL,
-	[TaskExecutionGUID]		[nchar](36)				NOT NULL,
-	[TaskID]				[int]					NOT NULL,
-	[TaskExecutionOrder]	[int]					NULL,
-	[TaskExecutionDuration] [int]					NULL,
+	[TaskExecutionID]		BIGINT				IDENTITY(1,1)	NOT NULL,
+	[ExecutionID]			BIGINT				NOT NULL,
+	[TaskExecutionGUID]		NCHAR(36)			NOT NULL,
+	[TaskID]				INT					NOT NULL,
+	[TaskExecutionOrder]	INT					CONSTRAINT [DF_ssisPackage_TaskExecutionOrder] DEFAULT ((0)) NULL,
+	[TaskExecutionDuration]	INT					NULL
 	CONSTRAINT [PK_ssisTaskExecution] PRIMARY KEY CLUSTERED ([TaskExecutionID] DESC)
 )
 GO

@@ -16,16 +16,19 @@ DECLARE @PackageNameLength INT
 SET @PackageNameLength = Len(@StringPackageName) 
 SET @FinalPackageName = @StringPackageName + '.dtsx' 
 
+/*
 SELECT [executable_id], 
        [execution_id], 
        [executable_name], 
        [executable_guid], 
        [package_name], 
        [package_path] 
-FROM   [SSISDB].[catalog].[executables] 
+FROM   [catalog].[executables] 
 WHERE  [execution_id] = @ServerExecutionID 
        AND executable_name <> @StringPackageName
        AND Charindex(@FinalPackageName, package_name) > 0 
+*/
 
+SELECT 1 AS [ONE]
 
 GO

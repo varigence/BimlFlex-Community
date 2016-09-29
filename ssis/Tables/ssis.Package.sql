@@ -13,15 +13,13 @@ CREATE TABLE [ssis].[Package](
 	[PrecedencePackageID]		INT					NULL,
 	[PackageFolder]				VARCHAR(255)		NULL,
 	[PackageRetryCount]			SMALLINT			CONSTRAINT [DF_ssisPackage_PackageRetryCount] DEFAULT ((0)) NULL,
-	[PackageExecutionCount]		SMALLINT			CONSTRAINT [DF_ssisPackage_PackageExecutionCount] DEFAULT ((0)) NULL,
-	[PackageExecutionDuration]	SMALLINT			CONSTRAINT [DF_ssisPackage_PackageExecutionDuration] DEFAULT ((0)) NULL,
+	[PackageExecutionCount]		INT					CONSTRAINT [DF_ssisPackage_PackageExecutionCount] DEFAULT ((0)) NULL,
+	[PackageDurationHistory]	VARCHAR(255)		NULL,
+	[PackageDurationAverage]	INT					NULL,
 	[IsBatch]					BIT					CONSTRAINT [DF_ssisPackage_IsBatch] DEFAULT ((0)) NULL,
 	[IsEnabled]					BIT					CONSTRAINT [DF_ssisPackage_IsEnabled] DEFAULT ((1)) NULL,
 	[ExecutionOrder]			SMALLINT			CONSTRAINT [DF_ssisPackage_ExecutionOrder] DEFAULT ((0)) NOT NULL,
-	--[CreatedBy]					VARCHAR(100)		CONSTRAINT [DF_ssisPackage_CreatedBy] DEFAULT ((SUSER_NAME())) NOT NULL,
 	[CreatedDate]				DATETIME			CONSTRAINT [DF_ssisPackage_CreatedDate] DEFAULT ((GETDATE())) NOT NULL,
-	--[UpdatedBy]					VARCHAR(100)		CONSTRAINT [DF_ssisPackage_UpdatedBy] DEFAULT ((SUSER_NAME())) NOT NULL,
-	--[UpdatedDate]				DATETIME			CONSTRAINT [DF_ssisPackage_UpdatedDate] DEFAULT ((GETDATE())) NOT NULL,
 	CONSTRAINT [PK_ssisPackage] PRIMARY KEY CLUSTERED ([PackageID] DESC)
 )
 GO

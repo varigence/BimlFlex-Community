@@ -1,10 +1,12 @@
 ﻿CREATE TABLE [ssis].[Task](
-	[TaskID]		[int] IDENTITY(1,1)	NOT NULL,
-	[PackageID]		[int]				NOT NULL,
-	[TaskName]		[nvarchar](1000)	NOT NULL,
-	[TaskOrder]		[smallint]			NULL,
-	[AvgDuration]	[int]				NULL,
-	CONSTRAINT [PK_ssisPackageTask] PRIMARY KEY CLUSTERED ([TaskID] ASC)
+	[TaskID]				INT					IDENTITY(1,1)	NOT NULL,
+	[PackageID]				INT					NOT NULL,
+	[TaskName]				NVARCHAR(1000)		NOT NULL,
+	[TaskOrder]				SMALLINT			NULL,
+	[TaskExecutionCount]	INT					CONSTRAINT [DF_ssisTask_TaskExecutionCount] DEFAULT ((0)) NULL,
+	[TaskDurationHistory]	VARCHAR(255)		NULL,
+	[TaskDurationAverage]	INT					NULL,
+	CONSTRAINT [PK_ssisTask] PRIMARY KEY CLUSTERED ([TaskID] ASC)
 )
 GO
 

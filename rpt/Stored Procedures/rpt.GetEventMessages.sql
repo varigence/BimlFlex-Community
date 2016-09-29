@@ -10,7 +10,7 @@ CREATE PROCEDURE [ssis].[GetEventMessages]
 	@ExecutionID VARCHAR(25)
 AS
 
-
+/*
 WITH msgex 
      AS (SELECT msg.[event_message_id], 
                 msg.[operation_id], 
@@ -73,6 +73,8 @@ WITH msgex
 SELECT * 
 FROM   msgenv 
 ORDER  BY [message_time] DESC
+*/
+SELECT 1 AS [ONE]
 
 RETURN 0
 
