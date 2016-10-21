@@ -16,10 +16,9 @@ CREATE PROCEDURE [ssis].[LogAuditRow]
 AS
 SET NOCOUNT ON
 BEGIN TRY
+	DECLARE	 @AuditRowID				BIGINT
 
 
-	DECLARE	 @AuditRowID		BIGINT
-	
     INSERT INTO [ssis].[AuditRow]
         ([ExecutionID]
         ,[ComponentName]
@@ -47,6 +46,7 @@ BEGIN TRY
 			,[ColumnName]
 			,[ColumnValue]
 	FROM	@AuditRowData
+
 
 	RETURN(0);
 END TRY

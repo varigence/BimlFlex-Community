@@ -6,6 +6,9 @@
 INSERT INTO @tblInsert([ConfigurationCode], [ConfigurationKey], [ConfigurationValue])
 VALUES	 ('BimlFlex', 'PackageRetryLimit', '3')
 		,('BimlFlex', 'SSISDB', 'SSISDB')
+		,('BimlFlex', 'RowAuditRetentionPeriod', '30')
+		,('BimlFlex', 'TaskExecutionRetentionPeriod', '30')
+		,('BimlFlex', 'LogTaskExecution', 'Y')
 
 MERGE [admin].[Configurations] AS TARGET
 USING @tblInsert AS src

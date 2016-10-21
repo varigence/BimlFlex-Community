@@ -38,7 +38,11 @@ BEGIN TRY
 		FROM	[ssis].[Execution]
 		WHERE	[ExecutionID] = @ExecutionID
 
-		EXEC [ssis].[LogTaskExecution] @SourceGUID, @PackageID, @ExecutionID, @ServerExecutionID
+		IF (ISNULL((SELECT TOP 1 CONVERT(CHAR(1), [ConfigurationValue]) FROM [admin].[Configurations] WHERE [ConfigurationCode] = 'BimlFlex' AND [ConfigurationKey] = 'LogTaskExecution'), 'N') = 'Y')
+		BEGIN
+			EXEC [ssis].[LogTaskExecution] @SourceGUID, @PackageID, @ExecutionID, @ServerExecutionID
+		END
+
 	COMMIT
 END TRY
 

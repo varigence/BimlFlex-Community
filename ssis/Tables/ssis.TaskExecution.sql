@@ -4,7 +4,8 @@
 	[TaskExecutionGUID]		NCHAR(36)			NOT NULL,
 	[TaskID]				INT					NOT NULL,
 	[TaskExecutionOrder]	INT					CONSTRAINT [DF_ssisPackage_TaskExecutionOrder] DEFAULT ((0)) NULL,
-	[TaskExecutionDuration]	INT					NULL
+	[TaskExecutionDuration]	INT					NULL,
+	[TaskStartTime]			DATETIME2(7)		CONSTRAINT [DF_ssisTaskExecution_TaskStartTime] DEFAULT (GETDATE()) NULL,
 	CONSTRAINT [PK_ssisTaskExecution] PRIMARY KEY CLUSTERED ([TaskExecutionID] DESC)
 )
 GO

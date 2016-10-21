@@ -14,6 +14,7 @@ CREATE TABLE [ssis].[RowCount] (
     [RowCount]				INT					NOT NULL,
     [ColumnSum]				MONEY				NULL,
     [ColumnName]			NVARCHAR (500)		NOT NULL,
+	[AuditDate]				DATETIME			CONSTRAINT [DF_ssisRowCount_AuditDate] DEFAULT (GETDATE()) NULL,
     CONSTRAINT [PK_ssis_RowCount] PRIMARY KEY CLUSTERED ([RowCountID] DESC)
 );
 

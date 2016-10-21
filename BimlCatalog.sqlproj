@@ -137,15 +137,17 @@
     <Build Include="dbo\User Defined Types\InputColumnInfo.sql" />
     <Build Include="ssis\Stored Procedures\ssis.LogTaskExecution.sql" />
     <Build Include="Security\catalog.sql" />
-    <Build Include="ssis\Tables\Task.sql" />
-    <Build Include="ssis\Tables\TaskExecution.sql" />
-    <Build Include="ssis\Tables\TaskExecutionError.sql" />
+    <Build Include="ssis\Tables\ssis.Task.sql" />
+    <Build Include="ssis\Tables\ssis.TaskExecution.sql" />
+    <Build Include="ssis\Tables\ssis.TaskExecutionError.sql" />
     <Build Include="ssis\Stored Procedures\ssis.GetConfigVariable.sql" />
     <Build Include="dbo\GetVersion.sql" />
     <Build Include="rpt\Views\rpt.GetExecutionDetails.sql" />
     <Build Include="Security\rpt.sql" />
     <Build Include="ssis\Stored Procedures\ssis.SetRollbackPackage.sql" />
     <Build Include="ssis\Stored Procedures\ssis.ResetExecutionStatus.sql" />
+    <Build Include="ssis\Stored Procedures\ssis.ArchiveRowAudit.sql" />
+    <Build Include="ssis\Stored Procedures\ssis.ArchiveTaskExecution.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />

@@ -6,13 +6,15 @@
 AS
 SET NOCOUNT ON
 
-DECLARE	@Sql	NVARCHAR(MAX)
+	DECLARE  @Sql							NVARCHAR(MAX)
+
 
 CREATE TABLE #TASK_EXECUTION(
 	[TaskName]				NVARCHAR(1000),
 	[TaskExecutionGUID]		NVARCHAR(36),
 	[TaskExecutionOrder]	BIGINT,
-	[TaskExecutionDuration]	BIGINT
+	[TaskExecutionDuration]	BIGINT,
+	[TaskStartTime]			DATETIME2(7)
 )
 
 CREATE TABLE #TASK_ERROR(
@@ -30,6 +32,7 @@ BEGIN
 			,LEFT(REPLACE(REPLACE([TaskExecutionGUID], ''{'', ''''), ''}'', ''''), 36) AS [TaskExecutionGUID]
 			,RANK() OVER (ORDER BY [TaskExecutionGUID], [TaskStartTime] ASC) AS [TaskExecutionOrder]
 			,[TaskExecutionDuration]
+			,[TaskStartTime]
 	FROM 
 	(
 		SELECT	 scet.[executable_name] AS [TaskName]
@@ -51,7 +54,7 @@ BEGIN
 				,scet.[executable_guid]
 	) AS src'
 
-	INSERT INTO #TASK_EXECUTION([TaskName], [TaskExecutionGUID], [TaskExecutionOrder], [TaskExecutionDuration])
+	INSERT INTO #TASK_EXECUTION([TaskName], [TaskExecutionGUID], [TaskExecutionOrder], [TaskExecutionDuration], [TaskStartTime])
 	EXEC (@Sql)
 
 	SET		@Sql = 'SELECT	 LEFT(REPLACE(REPLACE(scem.[message_source_id], ''{'', ''''), ''}'', ''''), 36) AS [TaskExecutionGUID] 
@@ -92,12 +95,14 @@ BEGIN
 			,[TaskExecutionGUID]
 			,[TaskID]
 			,[TaskExecutionOrder]
-			,[TaskExecutionDuration])
+			,[TaskExecutionDuration]
+			,[TaskStartTime])
 	SELECT	 @ExecutionID
 			,[TaskExecutionGUID]
 			,t.[TaskID]
 			,te.[TaskExecutionOrder]
 			,te.[TaskExecutionDuration]
+			,te.[TaskStartTime]
 	FROM	#TASK_EXECUTION te
 	INNER JOIN [ssis].[Task] t
 		ON	te.[TaskName] COLLATE DATABASE_DEFAULT = t.[TaskName] COLLATE DATABASE_DEFAULT
@@ -111,6 +116,7 @@ BEGIN
 			,[TaskExecutionGUID]
 			,[TaskErrorMessage]
 	FROM	#TASK_ERROR
+
 END
 
 GO

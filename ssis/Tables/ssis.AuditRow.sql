@@ -13,6 +13,7 @@ CREATE TABLE [ssis].[AuditRow] (
     [AuditType]				VARCHAR(20)			NOT NULL,
     [RowCount]				INT					NULL,
     [AuditRowSchema]		XML					NOT NULL,
+	[AuditDate]				DATETIME			CONSTRAINT [DF_ssisAuditRow_AuditDate] DEFAULT (GETDATE()) NULL,
     CONSTRAINT [PK_ssis_AuditRow] PRIMARY KEY CLUSTERED ([AuditRowID] DESC)
 );
 
