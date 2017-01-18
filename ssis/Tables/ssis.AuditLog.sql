@@ -7,7 +7,7 @@
 */
 CREATE TABLE [ssis].[AuditLog](
     [Id]				BIGINT				IDENTITY (1, 1) NOT NULL,
-	[AuditType]			VARCHAR(1)				NOT NULL,
+	[AuditType]			VARCHAR(1)			NOT NULL,
 	[TableName]			NVARCHAR (128)		NOT NULL,
 	[KeyId]				BIGINT				NOT NULL,
 	[ColumnName]		NVARCHAR (128)		NOT NULL,
