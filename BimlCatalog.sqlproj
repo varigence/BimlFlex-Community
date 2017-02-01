@@ -148,6 +148,7 @@
     <Build Include="ssis\Stored Procedures\ssis.ResetExecutionStatus.sql" />
     <Build Include="ssis\Stored Procedures\ssis.ArchiveRowAudit.sql" />
     <Build Include="ssis\Stored Procedures\ssis.ArchiveTaskExecution.sql" />
+    <Build Include="ssis\Stored Procedures\ssis.ArchiveAll.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />

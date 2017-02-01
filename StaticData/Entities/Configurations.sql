@@ -14,9 +14,9 @@ MERGE [admin].[Configurations] AS TARGET
 USING @tblInsert AS src
 	ON	TARGET.[ConfigurationCode] = src.[ConfigurationCode]
 	AND	TARGET.[ConfigurationKey] = src.[ConfigurationKey]
-WHEN MATCHED THEN 
-		UPDATE 
-		SET		 [ConfigurationValue] = src.[ConfigurationValue]
+--WHEN MATCHED THEN 
+--	UPDATE 
+--	SET		 [ConfigurationValue] = src.[ConfigurationValue]
 WHEN NOT MATCHED THEN
 	INSERT	([ConfigurationCode]
 			,[ConfigurationKey]
