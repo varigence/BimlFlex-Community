@@ -1,7 +1,6 @@
 ﻿CREATE VIEW [rpt].[GetExecutionDetails]
 AS 
 
-
 SELECT	 e.[ExecutionID]
 		,e.[PackageID]
 		,p.[PackageName]
@@ -35,8 +34,6 @@ SELECT	 e.[ExecutionID]
 		--,avgs.[DurationInSeconds] AS [AverageDuration]
 		,ee.[ErrorCode]
 		,ee.[ErrorDescription]
-		,rc.[CountType]
-		,rc.[RowCount]
 		,e.[ParentExecutionID]
 		,e.[ServerExecutionID]
 		,e.[ParentSourceGUID]
@@ -52,9 +49,5 @@ INNER JOIN [ssis].[Package] pp
 LEFT OUTER JOIN [ssis].[ExecutionError] ee
 	ON	e.[PackageID] = ee.[PackageID]
 	AND	e.[ExecutionID] = ee.[ExecutionID]
-LEFT OUTER JOIN [ssis].[RowCount] rc
-	ON e.[ExecutionID] = rc.[ExecutionID]
---WHERE pp.[PackageName] <> 'EX_Dim_CustomerTransactionBatchStatus_CustomerTransactionBatchStatus'
---AND e.[ParentExecutionID] = -1 AND p.[PackageName] LIKE '%Batch%'
 
 GO

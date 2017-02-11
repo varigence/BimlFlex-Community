@@ -6,7 +6,9 @@
 INSERT INTO @tblInsert([ConfigurationCode], [ConfigurationKey], [ConfigurationValue])
 VALUES	 ('BimlFlex', 'PackageRetryLimit', '3')
 		,('BimlFlex', 'SSISDB', 'SSISDB')
+		,('BimlFlex', 'AuditLogRetentionPeriod', '120')
 		,('BimlFlex', 'RowAuditRetentionPeriod', '30')
+		,('BimlFlex', 'RowCountRetentionPeriod', '90')
 		,('BimlFlex', 'TaskExecutionRetentionPeriod', '30')
 		,('BimlFlex', 'LogTaskExecution', 'N')
 
