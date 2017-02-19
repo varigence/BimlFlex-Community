@@ -51,7 +51,7 @@ SELECT	 e.[ExecutionID]
 		,e.[ParentSourceGUID]
 		,e.[ExecutionGUID]
 		,e.[SourceGUID]
-FROM	[rpt].[GetExecutionDetails] e
+FROM	[rpt].[ExecutionDetails] e
 LEFT OUTER JOIN [cteRowCounts] rc
 	ON e.[ExecutionID] = rc.[ExecutionID]
 

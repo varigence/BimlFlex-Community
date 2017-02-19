@@ -1,4 +1,4 @@
-﻿CREATE VIEW [rpt].[GetExecutionDetails]
+﻿CREATE VIEW [rpt].[ExecutionDetails]
 AS 
 
 SELECT	 e.[ExecutionID]
