@@ -23,27 +23,41 @@ BEGIN TRY
 	AND		[VariableName] = @VariableName	
 
 	-- Handle dates retaining largest in cases where incremental loads returned no records
-	IF (ISDATE(@PreviousValue) = 1 OR ISDATE(@VariableValue) = 1)
-	BEGIN
-		DECLARE	@PreviousDate	DATETIME2(7)
+    IF (ISDATE(@PreviousValue) = 1 OR ISDATE(@VariableValue) = 1)
+    BEGIN
+		DECLARE       @PreviousDate DATETIME2(7)
 		IF (ISDATE(@PreviousValue) = 1) SET @PreviousDate = CAST(@PreviousValue AS DATETIME2(7))
-		SET	@PreviousDate = ISNULL(@PreviousDate, '1900-01-01')
-		DECLARE	@CurrentDate	DATETIME2(7)
+			SET    @PreviousDate = ISNULL(@PreviousDate, '1900-01-01')
+		DECLARE       @CurrentDate  DATETIME2(7)
 		IF (ISDATE(@VariableValue) = 1) SET @CurrentDate = CAST(@VariableValue AS DATETIME2(7))
-		SET	@CurrentDate = ISNULL(@CurrentDate, '1900-01-01')
+			SET    @CurrentDate = ISNULL(@CurrentDate, '1900-01-01')
 		IF (@CurrentDate < @PreviousDate) SET @VariableValue = @PreviousValue
-	END
-	-- Handle numerics retaining largest in cases where incremental loads returned no records
-	ELSE IF (ISNUMERIC(@PreviousValue) = 1 OR ISNUMERIC(@VariableValue) = 1)
-	BEGIN
-		DECLARE	@PreviousNumber	DECIMAL(38,8)
-		IF (ISNUMERIC(@PreviousValue) = 1) SET @PreviousNumber = CAST(@PreviousValue AS DECIMAL(38,8))
-		SET	@PreviousNumber = ISNULL(@PreviousNumber, 0)
-		DECLARE	@CurrentNumber	DECIMAL(38,8)
-		IF (ISNUMERIC(@VariableValue) = 1) SET @CurrentNumber = CAST(@VariableValue AS DECIMAL(38,8))
-		SET	@CurrentNumber = ISNULL(@CurrentNumber, 0)
-		IF (@CurrentNumber < @PreviousNumber) SET @VariableValue = @PreviousValue
-	END
+    END
+    -- Handle numerics retaining largest in cases where incremental loads returned no records
+    ELSE IF (ISNUMERIC(@PreviousValue) = 1 OR ISNUMERIC(@VariableValue) = 1)
+    BEGIN
+		IF (CHARINDEX('.', @VariableValue) = 0)
+		BEGIN
+			DECLARE       @PreviousNumber      DECIMAL(38,0)
+			IF (ISNUMERIC(@PreviousValue) = 1) SET @PreviousNumber = CAST(@PreviousValue AS DECIMAL(38,0))
+				SET    @PreviousNumber = ISNULL(@PreviousNumber, 0)
+			DECLARE       @CurrentNumber       DECIMAL(38,0)
+			IF (ISNUMERIC(@VariableValue) = 1) SET @CurrentNumber = CAST(@VariableValue AS DECIMAL(38,0))
+				SET    @CurrentNumber = ISNULL(@CurrentNumber, 0)
+			IF (@CurrentNumber < @PreviousNumber) SET @VariableValue = @PreviousValue
+		END
+		ELSE
+		BEGIN
+			DECLARE       @PreviousDecimal     DECIMAL(38,4)
+			IF (ISNUMERIC(@PreviousValue) = 1) SET @PreviousDecimal = CAST(@PreviousValue AS DECIMAL(38,4))
+				SET    @PreviousDecimal = ISNULL(@PreviousDecimal, 0)
+			DECLARE       @CurrentDecimal      DECIMAL(38,4)
+			IF (ISNUMERIC(@VariableValue) = 1) SET @CurrentDecimal = CAST(@VariableValue AS DECIMAL(38,4))
+				SET    @CurrentDecimal = ISNULL(@CurrentDecimal, 0)
+			IF (@CurrentDecimal < @PreviousDecimal) SET @VariableValue = @PreviousValue
+		END
+    END
+
 
 	IF UPPER(ISNULL(@VariableValue, '')) IN ('', 'NULL', '0', '1900-01-01') 
 		AND UPPER(ISNULL(@PreviousValue, '')) NOT IN ('', 'NULL', '0', '1900-01-01') 
