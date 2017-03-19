@@ -5,6 +5,7 @@ WITH [cteRowCounts]
 AS
 (
 	SELECT   [ExecutionID]
+			,[ObjectName]
 			,MAX(CASE WHEN [CountType] = 'Unknown' THEN [RowCount] ELSE NULL END) AS [UnknownRowCount]
 			,MAX(CASE WHEN [CountType] = 'Select' THEN [RowCount] ELSE NULL END) AS [SelectRowCount]
 			,MAX(CASE WHEN [CountType] = 'Insert' THEN [RowCount] ELSE NULL END) AS [InsertRowCount]
@@ -17,6 +18,7 @@ AS
 			,MAX(CASE WHEN [CountType] = 'Control' THEN [RowCount] ELSE NULL END) AS [ControlRowCount]
 	FROM	[ssis].[RowCount]
 	GROUP BY [ExecutionID]
+			,[ObjectName]
 )
 
 SELECT	 e.[ExecutionID]
@@ -36,6 +38,7 @@ SELECT	 e.[ExecutionID]
 		,e.[Duration] 
 		,e.[ErrorCode]
 		,e.[ErrorDescription]
+		,rc.[ObjectName] AS [RowCountObject]
 		,rc.[SelectRowCount]
 		,rc.[InsertRowCount]
 		,rc.[UpdateRowCount]
