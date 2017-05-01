@@ -152,6 +152,7 @@
     <Build Include="ssis\Stored Procedures\ssis.ArchiveRowCount.sql" />
     <Build Include="ssis\Stored Procedures\ssis.ArchiveAuditLog.sql" />
     <Build Include="rpt\Views\rpt.ExecutionDetailsWithRowCounts.sql" />
+    <Build Include="ssis\Tables\ssis.TestAuditLog.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
