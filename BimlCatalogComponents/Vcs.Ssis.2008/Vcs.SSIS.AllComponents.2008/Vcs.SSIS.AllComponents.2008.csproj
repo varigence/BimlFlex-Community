@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2E9AC985-9EAE-4C83-BEE4-83EAE58DDD28}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Vcs.SSIS._2008.AllComponents</RootNamespace>
+    <AssemblyName>Vcs.SSIS.AllComponents.2008</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Vcs.SSIS.Deploy\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Vcs.SSIS.AuditRow.2008\Vcs.SSIS.AuditRow.2008.csproj">
+      <Project>{48bc7217-1778-475d-ace3-78486f57aac2}</Project>
+      <Name>Vcs.SSIS.AuditRow.2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Vcs.SSIS.ErrorDescription.2008\Vcs.SSIS.ErrorDescription.2008.csproj">
+      <Project>{0139f5c1-d35d-40f7-b3dc-b6afc4dbe690}</Project>
+      <Name>Vcs.SSIS.ErrorDescription.2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Vcs.SSIS.Hash.2008\Vcs.SSIS.Hash.2008.csproj">
+      <Project>{71356115-2127-4201-a337-81cdcc52cefc}</Project>
+      <Name>Vcs.SSIS.Hash.2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Vcs.SSIS.HashDual.2008\Vcs.SSIS.HashDual.2008.csproj">
+      <Project>{cfac45ff-1466-424c-a657-af4ccbdd9bfe}</Project>
+      <Name>Vcs.SSIS.HashDual.2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Vcs.SSIS.RowCount.2008\Vcs.SSIS.RowCount.2008.csproj">
+      <Project>{07a84140-b85b-4924-ba16-7af45d44baeb}</Project>
+      <Name>Vcs.SSIS.RowCount.2008</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
