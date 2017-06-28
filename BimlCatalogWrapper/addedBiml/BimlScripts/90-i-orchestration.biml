@@ -1,0 +1,58 @@
+﻿<#*
+# Copyright (C) 2015 Varigence, Inc.
+#
+# Licensed under the Varigence IP Framework Agreement, Version 1.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License by contacting support@varigence.com.
+*#>
+<#@ template designerbimlpath="Biml/Packages/Package/Tasks" #>
+<Container Name="SEQC - Package Start" ConstraintMode="Linear">
+	<Events>
+		<Event Name="OnPreExecute" EventType="OnPreExecute" ConstraintMode="Linear">
+			<Tasks>
+				<ForLoop Name="FRL - ExecutionID" ConstraintMode="Parallel" >
+					<LoopTestExpression>@[User::ExecutionID]==0</LoopTestExpression>
+					<Tasks>
+						<ExecuteSQL Name="SQL - Log Execution" ConnectionName="BimlCatalog" ResultSet="None">
+							<DirectInput>EXEC [ssis].[LogExecution] @ExecutionGUID, @SourceGUID, @PackageName, @IsBatch, @ParentSourceGUID, @ParentExecutionID, @ServerExecutionID, @ExecutionID OUTPUT, @ExecutionStatus OUTPUT, @NextLoadStatus OUTPUT, @LastExecutionID OUTPUT, @BatchStartTime OUTPUT</DirectInput>
+							<Parameters>
+								<Parameter Name="@ExecutionGUID" Direction="Input" DataType="String" VariableName="System.ExecutionInstanceGUID"/>
+								<Parameter Name="@SourceGUID" Direction="Input" DataType="String" VariableName="System.TaskID"/>
+								<Parameter Name="@PackageName" Direction="Input" DataType="String" VariableName="System.PackageName"/>
+								<Parameter Name="@IsBatch" Direction="Input" DataType="Boolean" VariableName="User.IsBatch"/>
+								<Parameter Name="@ParentSourceGUID" Direction="Input" DataType="String" VariableName="User.ParentSourceGUID"/>
+								<Parameter Name="@ParentExecutionID" Direction="Input" DataType="Int64" VariableName="User.ParentExecutionID"/>
+								<# 	if (((string[])RootNode.ObjectTag["LegacySsisVersion"]).Contains(RootNode.BuildSettings.SsisVersion.ToString())){ #>
+								<Parameter Name="@ServerExecutionID" Direction="Input" DataType="Int64" VariableName="User.ServerExecutionID"/>
+								<# } else { #>
+								<Parameter Name="@ServerExecutionID" Direction="Input" DataType="Int64" VariableName="System.ServerExecutionID"/>
+								<#	} #>
+								<Parameter Name="@ExecutionID" Direction="Output" DataType="Int64" VariableName="User.ExecutionID"/>
+								<Parameter Name="@ExecutionStatus" Direction="Output" DataType="String" Length="1" VariableName="User.ExecutionStatus"/>
+								<Parameter Name="@NextLoadStatus" Direction="Output" DataType="String" Length="1" VariableName="User.NextLoadStatus"/>
+								<Parameter Name="@LastExecutionID" Direction="Output" DataType="Int64" VariableName="User.LastExecutionID"/>
+								<Parameter Name="@BatchStartTime" Direction="Output" DataType="DateTime" VariableName="User.BatchStartTime"/>
+							</Parameters>
+						</ExecuteSQL>
+						<Container Name="SEQC - Cancel Execution" ConstraintMode="Parallel">
+							<PrecedenceConstraints LogicalType="Or">
+	                            <Inputs>
+	                                <Input OutputPathName="SQL - Log Execution.Output" EvaluationOperation="ExpressionAndConstraint" Expression="@ExecutionStatus == &quot;C&quot;"/>
+	                            </Inputs>
+	                        </PrecedenceConstraints>
+	                        <Tasks>
+								<ExecuteSQL Name="SQL - Log Execution End" ConnectionName="BimlCatalog" ResultSet="None">
+									<DirectInput>EXEC [ssis].[LogExecutionEnd] @ExecutionID, @IsBatch</DirectInput>
+									<Parameters>
+										<Parameter Name="@ExecutionID" Direction="Input" DataType="Int64" VariableName="User.ExecutionID"/>
+										<Parameter Name="@IsBatch" Direction="Input" DataType="Boolean" VariableName="User.IsBatch"/>
+									</Parameters>
+								</ExecuteSQL>
+	                        </Tasks>
+	                    </Container>
+					</Tasks>
+				</ForLoop>
+			</Tasks>
+		</Event>
+	</Events>
+</Container>

@@ -1,0 +1,22 @@
+﻿<#*
+# Copyright (C) 2015 Varigence, Inc.
+#
+# Licensed under the Varigence IP Framework Agreement, Version 1.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License by contacting support@varigence.com.
+*#>
+<#@ template designerbimlpath="Biml/Projects/Package/Variables" #>
+	<Variable Name="ExecutionID" DataType="Int64" Namespace="User">0</Variable>
+	<Variable Name="ExecutionStatus" DataType="String" Namespace="User">E</Variable>
+	<Variable Name="NextLoadStatus" DataType="String" Namespace="User">P</Variable>
+	<Variable Name="LastExecutionID" DataType="Int64" Namespace="User">0</Variable>
+	<Variable Name="BatchStartTime" DataType="DateTime" Namespace="User">1900-01-01</Variable>
+	<Variable Name="ParentExecutionID" DataType="Int64" Namespace="User" InheritFromPackageParentConfigurationString="User::ExecutionID">-1</Variable>
+	<Variable Name="ParentSourceGUID" DataType="String" Namespace="User" InheritFromPackageParentConfigurationString="System::TaskID" />
+	<Variable Name="InheritBatchStartTime" DataType="DateTime" Namespace="User" InheritFromPackageParentConfigurationString="User::BatchStartTime">1900-01-01</Variable>
+	<Variable Name="ParentBatchStartTime" DataType="DateTime" Namespace="User" EvaluateAsExpression="true">@[User::InheritBatchStartTime] == (DT_DBTIMESTAMP) "1900-01-01" ?  @[User::BatchStartTime] : @[User::InheritBatchStartTime]</Variable>
+	<Variable Name="ParentBatchStartTimeString" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">(DT_STR,4,1252) DATEPART("yyyy",@[User::ParentBatchStartTime]) + "-" + RIGHT("0" + (DT_STR,4,1252) DATEPART("m",@[User::ParentBatchStartTime]),2) + "-" + RIGHT("0" + (DT_STR,4,1252) DATEPART("d",@[User::ParentBatchStartTime]),2) + " " + RIGHT("0" + (DT_STR,4,1252) DATEPART("hh",@[User::ParentBatchStartTime]),2) + ":" + RIGHT("0" + (DT_STR,4,1252) DATEPART("mi",@[User::ParentBatchStartTime]),2) + ":" + RIGHT("0" + (DT_STR,4,1252) DATEPART("ss",@[User::ParentBatchStartTime]),2) + "." + RIGHT("00" + (DT_STR,4,1252) DATEPART("Ms",@[User::ParentBatchStartTime]),3)</Variable>
+	<Variable Name="IsBatch" DataType="Boolean" Namespace="User"><#=isBatch ? "true" : "false" #></Variable>
+<# 	if (((string[])RootNode.ObjectTag["LegacySsisVersion"]).Contains(RootNode.BuildSettings.SsisVersion.ToString())){ #>
+	<Variable Name="ServerExecutionID" DataType="Int64" Namespace="User">-1</Variable>
+<#	} #>

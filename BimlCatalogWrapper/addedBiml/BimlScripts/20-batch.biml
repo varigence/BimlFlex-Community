@@ -1,0 +1,30 @@
+﻿<#	var isBatch = false;#>
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+    <Packages>
+        <Package Name="OrchestrationDemo_Batch" ConstraintMode="Parallel" PackageSubpath="OrchestrationDemo" LogicalDisplayFolder="Batch">
+			<Variables>
+				<#@ include file="90-i-pkg-variables.biml" #>
+		    </Variables>
+            <Tasks>
+				<#@ include file="90-i-orchestration.biml" #>
+				<Container Name="SEQC - Package Main" ConstraintMode="Parallel">
+					<PrecedenceConstraints LogicalType="And">
+			        	<Inputs>
+			        		<Input OutputPathName="SEQC - Package Start.Output" EvaluationOperation="ExpressionAndConstraint" Expression="@ExecutionStatus == &quot;E&quot;||@ExecutionStatus == &quot;R&quot;" />
+			        	</Inputs>
+			        </PrecedenceConstraints>
+					<Tasks>
+		                <#	foreach(var packageNode in RootNode.Packages.Where(i=> i.PackageSubpath == "OrchestrationDemo" && i.Name.EndsWith("Batch") == false)){ #>
+		                <ExecutePackage Name="EPT - <#=packageNode.SsisSafeName#>">
+		                    <ExternalProjectPackage Package="<#=packageNode.SsisSafeName#>.dtsx" />
+		                </ExecutePackage>
+		                <#	} #>
+            		</Tasks>
+				</Container>
+            </Tasks>
+			<#@ include file="90-i-logging.biml" #>
+			<#@ include file="90-i-orchestration-onerror.biml" #>
+		</Package>
+    </Packages>
+</Biml>
+<#@ template language="C#" hostspecific="true" tier="10"#>

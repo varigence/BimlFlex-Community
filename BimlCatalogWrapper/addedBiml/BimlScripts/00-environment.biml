@@ -1,0 +1,19 @@
+﻿<#	// Use RootNode.ObjectTag to set some glablly accessible "Variables"
+	var ssisVersion = RootNode.BuildSettings.SsisVersion.ToString();
+	var componentVersion = ssisVersion == "Ssis2008R2" ? "Version=1.5.0.0" : ssisVersion == "Ssis2012" ? "Version=2.0.0.0" : ssisVersion == "Ssis2014" ? "Version=3.0.0.0" : ssisVersion == "Ssis2016" ? "Version=4.0.0.0" : "Version=1.0.0.0";
+	RootNode.ObjectTag["LegacySsisVersion"] = new string[] {"Ssis2005", "Ssis2008", "Ssis2008R2"};
+	RootNode.ObjectTag["ComponentVersion"] = componentVersion; #> 
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+	<Connections>
+		<Connection Name="AW" ConnectionString="Provider=SQLNCLI11;Server=localhost;Initial Catalog=AdventureWorksLT2012;Integrated Security=SSPI;"/>
+		<AdoNetConnection Name="BimlCatalog" ConnectionString="Data Source=.;Initial Catalog=BimlCatalog;Integrated Security=True;" Provider="System.Data.SqlClient" />
+		<Connection Name="ssislog" ConnectionString="Data Source=.;Initial Catalog=BimlCatalog;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+    </Connections>
+	<Databases>
+		<Database Name="AdventureWorksLT" ConnectionName="AW" />
+    </Databases>
+	<Schemas>
+		<Schema Name="SalesLT" DatabaseName="AdventureWorksLT" />
+    </Schemas>
+</Biml>
+<#@ template language="C#" hostspecific="True" tier="0"#>
