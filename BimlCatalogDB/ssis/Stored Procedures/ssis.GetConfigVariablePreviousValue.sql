@@ -12,7 +12,7 @@ CREATE PROCEDURE [ssis].[GetConfigVariablePreviousValue]
 AS
 SET NOCOUNT ON
 
-	SELECT	TOP 1 [PreviousValue]
+	SELECT	TOP 1 ISNULL([PreviousValue],'NULL') AS [PreviousValue]
 	FROM	[ssis].[ConfigVariable]
 	WHERE	[SystemName] = @SystemName
 	AND		[ObjectName] = @ObjectName
