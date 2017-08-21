@@ -154,6 +154,7 @@
     <Build Include="rpt\Views\rpt.ExecutionDetailsWithRowCounts.sql" />
     <Build Include="ssis\Tables\ssis.TestAuditLog.sql" />
     <Build Include="ssis\Stored Procedures\ssis.GetConfigVariablePreviousValue.sql" />
+    <None Include="StaticData\Entities\DatabaseVersion.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
@@ -178,4 +179,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(ProjectDir)\.msbuild\DacVersionFromAssembly.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(ProjectDir)\.msbuild\DacVersionFromAssembly.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>call "$(SolutionDir)BuildScripts\PreBuild.bat"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

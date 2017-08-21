@@ -11,6 +11,7 @@ VALUES	 ('BimlFlex', 'PackageRetryLimit', '3')
 		,('BimlFlex', 'RowCountRetentionPeriod', '90')
 		,('BimlFlex', 'TaskExecutionRetentionPeriod', '30')
 		,('BimlFlex', 'LogTaskExecution', 'N')
+		,('BimlCatalog', 'DatabaseVersion', '70101')
 
 MERGE [admin].[Configurations] AS TARGET
 USING @tblInsert AS src

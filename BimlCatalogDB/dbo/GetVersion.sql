@@ -10,10 +10,10 @@ CREATE PROCEDURE [dbo].[GetVersion]
 AS
 SET NOCOUNT ON
 BEGIN
-	SELECT	 [instance_name] AS [DatabaseName]
-			,[type_version] AS [VersionNumber]
-	FROM	[msdb].[dbo].[sysdac_instances]
-	WHERE	[instance_name] = DB_NAME()
-	
+	SELECT	 DB_NAME() AS [DatabaseName]
+			,[ConfigurationValue] AS [VersionNumber]
+	FROM	[admin].[Configurations] 
+	WHERE	[ConfigurationCode] = 'BimlCatalog' 
+	AND		[ConfigurationKey] = 'DatabaseVersion' 
 END
 GO
