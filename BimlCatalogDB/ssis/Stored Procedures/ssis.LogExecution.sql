@@ -96,8 +96,16 @@ BEGIN
 			UPDATE	e
 			SET		[ExecutionStatus] = 'A'
 					,[NextLoadStatus] = 'C'
+					,[EndTime] = ISNULL(e.[EndTime], GETDATE())
 			FROM	[ssis].[Execution] e
-			WHERE	[ExecutionID] = @CurrentExecutionID
+			INNER JOIN [ssis].[Package] p 
+				ON e.[PackageID] = p.[PackageID]
+			INNER JOIN [ssis].[Execution] ep
+				ON CASE	WHEN e.[ParentExecutionID] = -1 THEN e.[ExecutionID] ELSE e.[ParentExecutionID] END = ep.[ExecutionID]
+			INNER JOIN [ssis].[Package] pp 
+				ON ep.[PackageID] = pp.[PackageID]
+			WHERE	 e.[ExecutionStatus] = 'E'
+			AND		(e.[ExecutionID] = ISNULL(@CurrentExecutionID, e.[ExecutionID]) OR ep.[ExecutionID] = ISNULL(@CurrentExecutionID, ep.[ExecutionID]))
 		END
 		UPDATE	[ssis].[Package] 
 		SET		[PackageRetryCount] = @PackageRetryCount 
