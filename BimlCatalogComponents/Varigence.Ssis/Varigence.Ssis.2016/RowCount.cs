@@ -27,6 +27,7 @@ namespace Varigence.Ssis
         private DataTable _columnInfo = CreateColumnInfo();
         private bool _pbCancel;
         private int _allRowCount;
+        private int _bufferCount = 1;
         private decimal _allAggregate;
         private string _rowCountSumName;
         private int _rowCountSumIndex;
@@ -50,13 +51,18 @@ namespace Varigence.Ssis
 
         public override void PostExecute()
         {
+            LogRowcount();
+        }
+
+        private void LogRowcount()
+        {
             var rowCountData = new RowCountSerialize
-                {
-                    RowCountType =
-                        (RowCountSerialize.RowCountTypeEnum)
-                        (ComponentMetaData.CustomPropertyCollection["RowCountType"].Value),
-                    RowCount = _allRowCount
-                };
+            {
+                RowCountType =
+                    (RowCountSerialize.RowCountTypeEnum)
+                    (ComponentMetaData.CustomPropertyCollection["RowCountType"].Value),
+                RowCount = _allRowCount
+            };
             if (string.IsNullOrEmpty(_rowCountSumName))
             {
                 rowCountData.ColumnSum = 0;
@@ -90,18 +96,18 @@ namespace Varigence.Ssis
             _cmd.Parameters["@ColumnName"].Value = rowCountData.ColumnName;
             _cmd.ExecuteNonQuery();
 
-            if (_columnInfo == null || _columnInfo.Rows.Count == 0) return;
-            var cmd = new SqlCommand("[ssis].[LogColumnInfo]", _connection) {CommandType = CommandType.StoredProcedure};
-            cmd.Parameters.Add(new SqlParameter("@ExecutionID", rowCountData.ExecutionID));
+            //if (_columnInfo == null || _columnInfo.Rows.Count == 0) return;
+            //var cmd = new SqlCommand("[ssis].[LogColumnInfo]", _connection) { CommandType = CommandType.StoredProcedure };
+            //cmd.Parameters.Add(new SqlParameter("@ExecutionID", rowCountData.ExecutionID));
 
-            var parameter = new SqlParameter("@InputColumnInfo", SqlDbType.Structured)
-            {
-                TypeName = "dbo.InputColumnInfo",
-                Value = _columnInfo
-            };
-            cmd.Parameters.Add(parameter);
-            cmd.CommandTimeout = 0;
-            cmd.ExecuteNonQuery();
+            //var parameter = new SqlParameter("@InputColumnInfo", SqlDbType.Structured)
+            //{
+            //    TypeName = "dbo.InputColumnInfo",
+            //    Value = _columnInfo
+            //};
+            //cmd.Parameters.Add(parameter);
+            //cmd.CommandTimeout = 0;
+            //cmd.ExecuteNonQuery();
         }
 
         public override void PreExecute()
@@ -118,12 +124,13 @@ namespace Varigence.Ssis
                 _columnInfo.Rows.Add(
                     BufferManager.FindColumnByLineageID(input.Buffer, column.LineageID),
                     column.LineageID,
-                    column.Name,
-                    column.DataType.ToString(),
-                    column.CodePage,
-                    column.Length,
-                    column.Precision,
-                    column.Scale
+                    column.Name
+                    //,
+                    //column.DataType.ToString(),
+                    //column.CodePage,
+                    //column.Length,
+                    //column.Precision,
+                    //column.Scale
                 );
 
                 if (!string.IsNullOrEmpty(_rowCountSumName) && _rowCountSumName == column.Name)
@@ -139,10 +146,16 @@ namespace Varigence.Ssis
             if (buffer.EndOfRowset) return;
             while (buffer.NextRow())
             {
-                if (_rowCountSumIndex > 0)
+                if (!string.IsNullOrEmpty(_rowCountSumName) && buffer.ColumnCount > 0)
                     _allAggregate += decimal.Parse(buffer[_rowCountSumIndex].ToString());
             }
             _allRowCount += buffer.RowCount;
+            if (_bufferCount > 4)
+            {
+                LogRowcount();
+                _bufferCount = 0;
+            }
+            _bufferCount++;
         }
 
         public override void ProvideComponentProperties()
@@ -253,11 +266,11 @@ namespace Varigence.Ssis
             dt.Columns.Add("BufferColumnIndex", typeof(Int32));
             dt.Columns.Add("LineageID", typeof(Int32));
             dt.Columns.Add("Name", typeof(string));
-            dt.Columns.Add("CodePage", typeof(Int32));
-            dt.Columns.Add("DataType", typeof(string));
-            dt.Columns.Add("Length", typeof(Int32));
-            dt.Columns.Add("Precision", typeof(Int32));
-            dt.Columns.Add("Scale", typeof(Int32));
+            //dt.Columns.Add("CodePage", typeof(Int32));
+            //dt.Columns.Add("DataType", typeof(string));
+            //dt.Columns.Add("Length", typeof(Int32));
+            //dt.Columns.Add("Precision", typeof(Int32));
+            //dt.Columns.Add("Scale", typeof(Int32));
             return dt;
         }
     }
