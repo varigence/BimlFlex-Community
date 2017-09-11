@@ -8,6 +8,7 @@
 CREATE PROCEDURE [ssis].[LogExecution](
 	@ExecutionGUID			[nvarchar](40),
 	@SourceGUID				[nvarchar](40),
+	@ProjectName			[varchar](500),
 	@PackageName			[varchar](500),
 	@IsBatch				[bit],
 	@ParentSourceGUID		[nvarchar](40),
@@ -18,7 +19,7 @@ CREATE PROCEDURE [ssis].[LogExecution](
 	@NextLoadStatus			[varchar](1)	= NULL OUTPUT,
 	@LastExecutionID		[bigint]        = NULL OUTPUT,
 	@BatchStartTime			[datetime]		= NULL OUTPUT
-) 
+)
 AS 
 
 DECLARE	 @PackageID				INT
@@ -41,11 +42,26 @@ BEGIN
 			,@IsEnabled = [IsEnabled]
 	FROM	[ssis].[Package]
 	WHERE	[PackageName] = @PackageName
+	AND		[ProjectName] = @ProjectName
 
 	IF @PackageID IS NULL
 	BEGIN
-		INSERT INTO [ssis].[Package] ([PackageName], [IsBatch]) VALUES (@PackageName, @IsBatch)
-		SELECT @PackageID = SCOPE_IDENTITY();
+		SELECT	 @PackageID = [PackageID]
+				,@IsEnabled = [IsEnabled]
+		FROM	[ssis].[Package]
+		WHERE	[PackageName] = @PackageName
+
+		IF @PackageID IS NULL
+		BEGIN
+			INSERT INTO [ssis].[Package] ([ProjectName], [PackageName], [IsBatch]) VALUES (@ProjectName, @PackageName, @IsBatch)
+			SELECT @PackageID = SCOPE_IDENTITY();
+		END
+		ELSE
+		BEGIN
+			UPDATE	[ssis].[Package]
+			SET		[ProjectName] = @ProjectName
+			WHERE	[PackageID] = @PackageID
+		END
 	END
 
 	-- Check if Package is already executing

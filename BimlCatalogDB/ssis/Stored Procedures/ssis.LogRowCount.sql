@@ -11,7 +11,7 @@ CREATE PROCEDURE [ssis].[LogRowCount](
     @ObjectName				[nvarchar](200),
     @CountType				[varchar](20),
     @RowCount				[int],
-	@ColumnSum				[money],
+	@ColumnSum				[decimal](38, 4),
 	@ColumnName				[varchar](200)
 ) 
 AS
