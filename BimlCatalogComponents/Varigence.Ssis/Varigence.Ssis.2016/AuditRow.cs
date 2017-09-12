@@ -186,7 +186,7 @@ namespace Varigence.Ssis
                 }
             }
 
-            EndMessage();
+            if (_auditRowDataCollection.Count > 0) EndMessage();
 
             if (!_isHardError) return;
             bool isTrue;
