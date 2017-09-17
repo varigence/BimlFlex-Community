@@ -8,7 +8,6 @@
 CREATE PROCEDURE [ssis].[LogExecution](
 	@ExecutionGUID			[nvarchar](40),
 	@SourceGUID				[nvarchar](40),
-	@ProjectName			[varchar](500),
 	@PackageName			[varchar](500),
 	@IsBatch				[bit],
 	@ParentSourceGUID		[nvarchar](40),
@@ -18,7 +17,8 @@ CREATE PROCEDURE [ssis].[LogExecution](
 	@ExecutionStatus		[varchar](1)	= NULL OUTPUT,
 	@NextLoadStatus			[varchar](1)	= NULL OUTPUT,
 	@LastExecutionID		[bigint]        = NULL OUTPUT,
-	@BatchStartTime			[datetime]		= NULL OUTPUT
+	@BatchStartTime			[datetime]		= NULL OUTPUT,
+	@ProjectName			[varchar](500)  = NULL
 )
 AS 
 
@@ -42,7 +42,7 @@ BEGIN
 			,@IsEnabled = [IsEnabled]
 	FROM	[ssis].[Package]
 	WHERE	[PackageName] = @PackageName
-	AND		[ProjectName] = @ProjectName
+	AND		[ProjectName] = ISNULL(@ProjectName, 'Not Specified')
 
 	IF @PackageID IS NULL
 	BEGIN
@@ -53,13 +53,13 @@ BEGIN
 
 		IF @PackageID IS NULL
 		BEGIN
-			INSERT INTO [ssis].[Package] ([ProjectName], [PackageName], [IsBatch]) VALUES (@ProjectName, @PackageName, @IsBatch)
+			INSERT INTO [ssis].[Package] ([ProjectName], [PackageName], [IsBatch]) VALUES (ISNULL(@ProjectName, 'Not Specified'), @PackageName, @IsBatch)
 			SELECT @PackageID = SCOPE_IDENTITY();
 		END
 		ELSE
 		BEGIN
 			UPDATE	[ssis].[Package]
-			SET		[ProjectName] = @ProjectName
+			SET		[ProjectName] = ISNULL(@ProjectName, 'Not Specified')
 			WHERE	[PackageID] = @PackageID
 		END
 	END

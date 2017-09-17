@@ -156,6 +156,7 @@
     <Build Include="ssis\Stored Procedures\ssis.GetConfigVariablePreviousValue.sql" />
     <None Include="StaticData\Entities\DatabaseVersion.sql" />
     <Build Include="ssis\Stored Procedures\ssis.SetDisablePackage.sql" />
+    <Build Include="ssis\Stored Procedures\ssis.SetEnablePackage.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
