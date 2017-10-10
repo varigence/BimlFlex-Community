@@ -99,13 +99,7 @@ namespace Varigence.Ssis
 
         public RowCountTypeEnum RowCountType { get; set; }
 
-        public string RowCountTypeString
-        {
-            get
-            {
-                return LogRowCountTypeCollection != null ? LogRowCountTypeCollection[(int)RowCountType] : null;
-            }
-        }
+        public string RowCountTypeString => LogRowCountTypeCollection != null ? LogRowCountTypeCollection[(int)RowCountType] : null;
 
         #endregion
 

@@ -33,21 +33,17 @@ namespace Varigence.Ssis
             public string dataType;
         }
 
-        /// <summary>
-        /// Used when directing rows to the error output. The integer specifies the error code for the column.
-        /// The string specifies the message displayed for the error code.
-        /// </summary>
-
         const int INVALID_CHARACTER_INDEX = 0x1;
         const string InvalidCharacterIndexmessage = "The character index to change is outside the length of the column value.";
         private static SHA1 _sha1 = SHA1.Create();
+        private string nullValue = "";
         private const Boolean millisecondHandling = true;
         //        private HashAlgorithm HashSHA1Algorithm;
         private ColumnInfo[] inputColumnInfos;
         private ColumnInfo[] outputColumnInfos;
         internal const string Hash_ALGORITHM_PROPERTY = "HashAlgorithm";
 
-        #endregion
+        #endregion Member data
 
         #region Design Time
 
@@ -71,15 +67,16 @@ namespace Varigence.Ssis
                 }
             }
         }
-        #endregion
+        #endregion PerformUpgrade
 
         #region ProvideComponentProperties
-        /// <summary>
-        /// Called when the component is initially added to the data flow task. Add the input, output, and error output.
-        /// </summary>
         public override void ProvideComponentProperties()
         {
             ComponentMetaData.UsesDispositions = true;
+
+            var propertyObject = ComponentMetaData.CustomPropertyCollection.New();
+            propertyObject.Name = "NullValue";
+            propertyObject.Description = "This value will be used to replace any Null Values when hashing.";
 
             //	Add the input
             IDTSInput100 input = ComponentMetaData.InputCollection.New();
@@ -94,7 +91,7 @@ namespace Varigence.Ssis
 
             AddHashColumn();
         }
-        #endregion
+        #endregion ProvideComponentProperties
 
         #region AddHashColumn
         private void AddHashColumn()
@@ -107,31 +104,15 @@ namespace Varigence.Ssis
             property.Description = "Hash SHA1 transformation result column indicator.";
             property.Value = "Hash";
         }
-        #endregion
+        #endregion AddHashColumn
 
         #region Validate
         public override DTSValidationStatus Validate()
         {
-            ///	If there is an input column that no longer exists in the Virtual input collection,
-            /// return needs new meta data. The designer will then call ReinitalizeMetadata which will clean up the input collection.
             if (ComponentMetaData.AreInputColumnsValid == false)
             {
                 return DTSValidationStatus.VS_NEEDSNEWMETADATA;
             }
-            /// Check each Input column in the collection:
-            /// UsageType == UT_READWRITE
-            /// DataType == DT_WSTR or DT_TEXT, or DT_STR
-            /// 
-            //foreach (IDTSInputColumn100 column in ComponentMetaData.InputCollection[0].InputColumnCollection)
-            //{
-            //    /// Validate column datatype.
-            //    if (column.DataType == DataType.DT_NTEXT || column.DataType == DataType.DT_IMAGE || column.DataType == DataType.DT_BYTES)
-            //    {
-            //        ComponentMetaData.FireError(HResults.DTS_E_INVALIDDATATYPE, ComponentMetaData.Name, "The DataType " + column.DataType.ToString() + " of " + column.IdentificationString + " is not supported by the " + ComponentMetaData.Name + " component.", "", 0, out bCancel);
-            //        return DTSValidationStatus.VS_ISBROKEN;
-            //    }
-
-            //}
 
             if (!ValidateOutputColumn())
             {
@@ -150,13 +131,9 @@ namespace Varigence.Ssis
                 && ((output.OutputColumnCollection[0].CustomPropertyCollection.Count == 1)
                 && (output.OutputColumnCollection[0].CustomPropertyCollection[0].Name == "Hash")));
         }
-        #endregion
+        #endregion Validate
 
         #region ReinitializeMetaData
-        /// <summary>
-        /// Called after the component has returned VS_NEEDSNEWMETADATA from Validate. Removes any input columns that 
-        /// no longer exist in the Virtual Input Collection.
-        /// </summary>
         public override void ReinitializeMetaData()
         {
             ComponentMetaData.RemoveInvalidInputColumns();
@@ -168,19 +145,9 @@ namespace Varigence.Ssis
                 AddHashColumn();
             }
         }
-        #endregion
-
+        #endregion ReinitializeMetaData
 
         #region SetUsageType
-        /// <summary>
-        /// Called when a user has selected an Input column for the component. This component only accepts input columns
-        /// that have DTSUsageType.UT_READWRITE. Any other usage types are rejected.
-        /// </summary>
-        /// <param name="inputID">The ID of the input that the column is inserted in.</param>
-        /// <param name="virtualInput">The virtual input object containing that contains the new column.</param>
-        /// <param name="lineageID">The lineageID of the virtual input column.</param>
-        /// <param name="usageType">The DTSUsageType parameter that specifies how the column is used by the component.</param>
-        /// <returns>The newly created IDTSInputColumn100.</returns>
         public override IDTSInputColumn100 SetUsageType(int inputID, IDTSVirtualInput100 virtualInput, int lineageID, DTSUsageType usageType)
         {
             if (usageType == DTSUsageType.UT_READWRITE)
@@ -188,45 +155,29 @@ namespace Varigence.Ssis
 
             return base.SetUsageType(inputID, virtualInput, lineageID, usageType);
         }
-        #endregion
+        #endregion SetUsageType
 
         #region DeleteOutput
-        /// <summary>
-        /// Called when an IDTSOutput100 is deleted from the component. Disallow outputs to be deleted by throwing an exception.
-        /// </summary>
-        /// <param name="outputID">The ID of the output to delete.</param>
         public override void DeleteOutput(int outputID)
         {
             throw new Exception("Can't delete output " + outputID.ToString(CultureInfo.InvariantCulture));
         }
-        #endregion
+        #endregion DeleteOutput
 
         #region InsertOutput
-        /// <summary>
-        /// Called when an IDTSOutput100 is added to the component. Disallow new outputs by throwing an exception.
-        /// </summary>
-        /// <param name="insertPlacement">The location, relative to the output specified by outputID,to insert the new output.</param>
-        /// <param name="outputID">The ID of the output that the new output is located next to.</param>
-        /// <returns></returns>
         public override IDTSOutput100 InsertOutput(DTSInsertPlacement insertPlacement, int outputID)
         {
             throw new Exception("Can't add output to the component.");
         }
-        #endregion
+        #endregion InsertOutput
 
-        #endregion
+        #endregion Design Time
 
         #region Runtime
 
         #region PreExecute
-        /// <summary>
-        /// Called prior to ProcessInput, the buffer column index, index of the character to change, and the operation
-        /// for each column in the input collection is read, and stored.
-        /// </summary>
         public override void PreExecute()
         {
-
-            //bool flag = false;
             IDTSInput100 input = ComponentMetaData.InputCollection[0];
             inputColumnInfos = new ColumnInfo[input.InputColumnCollection.Count];
             for (int i = 0; i < input.InputColumnCollection.Count; i++)
@@ -257,30 +208,21 @@ namespace Varigence.Ssis
 
             }
 
-            //IDTSCustomProperty100 HashSHA1Algorithm = ComponentMetaData.CustomPropertyCollection["Hash"];
+            if ((ComponentMetaData.CustomPropertyCollection["NullValue"].Value != null) && (ComponentMetaData.CustomPropertyCollection["NullValue"].Value.ToString().Length > 0))
+            {
+                nullValue = (string) ComponentMetaData.CustomPropertyCollection["NullValue"].Value;
+            }
         }
-        #endregion
+        #endregion PreExecute
 
         #region OnInputPathAttached
         public override void OnInputPathAttached(int inputID)
         {
-            //IDTSVirtualInput100 virtualInput = ComponentMetaData.InputCollection.GetObjectByID(inputID).GetVirtualInput();
-            //foreach (IDTSVirtualInputColumn100 column in virtualInput.VirtualInputColumnCollection)
-            //{
-            //    if (column.Name != "ErrorColumn")
-            //    {
-            //        SetUsageType(inputID, virtualInput, column.LineageID, 0);
-            //    }
-            //}
+
         }
-        #endregion
+        #endregion OnInputPathAttached
 
         #region ProcessInput
-        /// <summary>
-        /// Called when a PipelineBuffer is passed to the component.
-        /// </summary>
-        /// <param name="inputID">The ID of the Input that the buffer contains rows for.</param>
-        /// <param name="buffer">The PipelineBuffer containing the columns defined in the IDTSInput100.</param>
         public override void ProcessInput(int inputID, PipelineBuffer buffer)
         {
             if (buffer == null)
@@ -302,21 +244,17 @@ namespace Varigence.Ssis
 
                 while (buffer.NextRow())
                 {
-                    /// If the inputColumnInfos array has zero dimensions, then 
-                    /// no input columns have been selected for the component. 
-                    /// Direct the row to the default output.
                     if (inputColumnInfos.Length == 0)
                     {
                         buffer.DirectRow(defaultOutputId);
                     }
                     else
                     {
-                        bool isError = false;
-                        byte[] inputByteBuffer = new byte[1000];
-                        Int32 bufferUsed = 0;
-                        string nullHandling = String.Empty;
+                        var isError = false;
+                        var inputByteBuffer = new byte[1000];
+                        var bufferUsed = 0;
                         uint blobLength = 0;
-                        Int32 columnToProcessID = 0;
+                        var columnToProcessID = 0;
 
                         for (int i = 0; i < inputColumnInfos.Length; i++)
                         {
@@ -325,7 +263,6 @@ namespace Varigence.Ssis
 
                             if (!buffer.IsNull(columnToProcessID))
                             {
-                                nullHandling += "N";
                                 switch (buffer.GetColumnInfo(columnToProcessID).DataType)
                                 {
                                     case DataType.DT_BOOL:
@@ -334,20 +271,16 @@ namespace Varigence.Ssis
                                     case DataType.DT_IMAGE:
                                         blobLength = buffer.GetBlobLength(columnToProcessID);
                                         Utility.Append(ref inputByteBuffer, ref bufferUsed, buffer.GetBlobData(columnToProcessID, 0, (int)blobLength));
-                                        nullHandling += blobLength.ToString();
                                         break;
                                     case DataType.DT_BYTES:
                                         byte[] bytesFromBuffer = buffer.GetBytes(columnToProcessID);
                                         Utility.Append(ref inputByteBuffer, ref bufferUsed, bytesFromBuffer);
-                                        nullHandling += bytesFromBuffer.GetLength(0).ToString();
                                         break;
                                     case DataType.DT_CY:
                                     case DataType.DT_DECIMAL:
                                     case DataType.DT_NUMERIC:
                                         Utility.Append(ref inputByteBuffer, ref bufferUsed, buffer.GetDecimal(columnToProcessID));
                                         break;
-//#if SQL2005
-//#else
                                     //case DataType.DT_DBTIMESTAMPOFFSET:
                                     //    DateTimeOffset dateTimeOffset = buffer.GetDateTimeOffset(columnToProcessID);
                                     //    Utility.Append(ref inputByteBuffer, ref bufferUsed, dateTimeOffset);
@@ -355,23 +288,16 @@ namespace Varigence.Ssis
                                     case DataType.DT_DBDATE:
                                         Utility.Append(ref inputByteBuffer, ref bufferUsed, buffer.GetDate(columnToProcessID), millisecondHandling);
                                         break;
-//#endif
                                     case DataType.DT_DATE:
                                     case DataType.DT_DBTIMESTAMP:
-#if SQL2005
-#else
                                     case DataType.DT_DBTIMESTAMP2:
                                     case DataType.DT_FILETIME:
-#endif
                                         Utility.Append(ref inputByteBuffer, ref bufferUsed, buffer.GetDateTime(columnToProcessID), millisecondHandling);
                                         break;
-#if SQL2005
-#else
                                     case DataType.DT_DBTIME:
                                     case DataType.DT_DBTIME2:
                                         Utility.Append(ref inputByteBuffer, ref bufferUsed, buffer.GetTime(columnToProcessID));
                                         break;
-#endif
                                     case DataType.DT_GUID:
                                         Utility.Append(ref inputByteBuffer, ref bufferUsed, buffer.GetGuid(columnToProcessID));
                                         break;
@@ -387,13 +313,14 @@ namespace Varigence.Ssis
                                     case DataType.DT_I8:
                                         Utility.Append(ref inputByteBuffer, ref bufferUsed, buffer.GetInt64(columnToProcessID));
                                         break;
-                                    case DataType.DT_NTEXT:
                                     case DataType.DT_STR:
                                     case DataType.DT_TEXT:
+                                        Utility.Append(ref inputByteBuffer, ref bufferUsed, buffer.GetString(columnToProcessID), Encoding.ASCII);
+                                        break;
+                                    case DataType.DT_NTEXT:
                                     case DataType.DT_WSTR:
-                                        String stringFromBuffer = buffer.GetString(columnToProcessID);
-                                        Utility.Append(ref inputByteBuffer, ref bufferUsed, stringFromBuffer, Encoding.UTF8);
-                                        nullHandling += stringFromBuffer.Length.ToString();
+                                        var wstr = buffer.GetString(columnToProcessID);
+                                        Utility.Append(ref inputByteBuffer, ref bufferUsed, buffer.GetString(columnToProcessID), Encoding.Unicode);
                                         break;
                                     case DataType.DT_R4:
                                         Utility.Append(ref inputByteBuffer, ref bufferUsed, buffer.GetSingle(columnToProcessID));
@@ -419,57 +346,31 @@ namespace Varigence.Ssis
                                         break;
                                 }
                             }
-                            else
+                            else if (!string.IsNullOrEmpty(nullValue))
                             {
-                                nullHandling += "Y";
+                                Utility.Append(ref inputByteBuffer, ref bufferUsed, nullValue, Encoding.ASCII);
                             }
-
                         }
 
-                        Utility.Append(ref inputByteBuffer, ref bufferUsed, nullHandling, Encoding.UTF8);
-
+                        var iByteBuffer = bufferUsed;
+                        byte[] trimmedByteBuffer = new byte[bufferUsed];
+                        Array.Copy(inputByteBuffer, trimmedByteBuffer, iByteBuffer);
 
                         var sha1HashDual = new SHA1CryptoServiceProvider();
-                        var Hash = sha1HashDual.ComputeHash(inputByteBuffer);
-
-                        var hash = BitConverter.ToString(Hash).Replace("-", "");
+                        var hash = BitConverter.ToString(sha1HashDual.ComputeHash(trimmedByteBuffer)).Replace("-", "");
                         buffer.SetString(outputColumnInfos[0].bufferColumnIndex, hash);
 
-                        /// Finished processing each of the columns in this row.
-                        /// If an error occurred and the error output is configured, then the row has already been directed to the error output, if configured.
-                        /// If not, then direct the row to the default output.
                         if (!isError)
                         {
                             buffer.DirectRow(defaultOutputId);
                         }
-
                     }
-
-
-
                 }
             }
         }
 
-        public static byte[] Sha1Hash(string Data)
-        {
-            SHA1 sha1 = new SHA1CryptoServiceProvider();
-            byte[] hash = sha1.ComputeHash(Encoding.ASCII.GetBytes(Data));
+        #endregion ProcessInput
 
-            //StringBuilder stringBuilder = new StringBuilder();
-            //foreach (byte b in hash)
-            //{
-            //    stringBuilder.AppendFormat("{0:x2}", b);
-            //}
-            return hash; //stringBuilder.ToString();
-        }
-        #endregion
-
-        /// <summary>
-        /// Called by the data flow to retrieve description of the error code provided to DirectErrorRow during ProcessInput.
-        /// </summary>
-        /// <param name="iErrorCode">The error code to retrieve the message for.</param>
-        /// <returns>A string containing the error description.</returns>
         public override string DescribeRedirectedErrorCode(int iErrorCode)
         {
 
@@ -479,6 +380,6 @@ namespace Varigence.Ssis
         }
 
 
-        #endregion
+        #endregion Runtime
     }
 }

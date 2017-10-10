@@ -423,8 +423,6 @@ namespace Varigence.Ssis
                         var fhash = sha1HashDual.ComputeHash(inputByteBuffer);
                         var reverseByteBuffer = inputByteBuffer.Reverse().ToArray();
                         var rhash = sha1HashDual.ComputeHash(reverseByteBuffer);
-
-                        //var noOfPartitions = (Int16)ComponentMetaData.CustomPropertyCollection["NoOfPartitions"].Value;
                         
                         var hash1 = BitConverter.ToString(fhash).Replace("-", ""); // + "~" + BitConverter.ToString(rhash);
                         var hash2 = BitConverter.ToString(rhash).Replace("-", "");

@@ -100,10 +100,7 @@ namespace Varigence.Ssis
 
         public AuditRowTypeEnum AuditRowType { get; set; }
 
-        public string AuditRowTypeString
-        {
-            get { return LogAuditRowTypeCollection[(int)AuditRowType]; }
-        }
+        public string AuditRowTypeString => LogAuditRowTypeCollection[(int)AuditRowType];
 
         public string AuditRowSchema { get; set; }
 
