@@ -42,6 +42,7 @@
     </Compile>
     <Compile Include="ErrorDescription.cs">
     </Compile>
+    <Compile Include="HashSql.cs" />
     <Compile Include="Hash.cs">
     </Compile>
     <Compile Include="HashDual.cs">
@@ -98,6 +99,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Varigence.Ssis.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\HashSql.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

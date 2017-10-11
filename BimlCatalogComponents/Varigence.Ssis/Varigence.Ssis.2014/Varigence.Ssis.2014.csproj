@@ -52,6 +52,9 @@
     <Compile Include="..\Varigence.Ssis.2016\HashDual.cs">
       <Link>HashDual.cs</Link>
     </Compile>
+	<Compile Include="..\Varigence.Ssis.2016\HashSql.cs">
+      <Link>HashSql.cs</Link>
+    </Compile>
     <Compile Include="..\Varigence.Ssis.2016\RowCount.cs">
       <Link>RowCount.cs</Link>
     </Compile>
@@ -104,6 +107,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="..\Varigence.Ssis.2016\Icons\HashDual.ico">
       <Link>Icons\HashDual.ico</Link>
+    </EmbeddedResource>
+	<EmbeddedResource Include="..\Varigence.Ssis.2016\Icons\HashSql.ico">
+      <Link>Icons\HashSql.ico</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Varigence.Ssis.2016\Icons\RowCount.ico">
       <Link>Icons\RowCount.ico</Link>
