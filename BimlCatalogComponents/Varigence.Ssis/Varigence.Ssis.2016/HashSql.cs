@@ -15,7 +15,7 @@ namespace Varigence.Ssis
         DtsPipelineComponent
         (
             DisplayName = "Biml Hash Sql"
-            , Description = "SHA1 hash of columns compatable with RDBMS."
+            , Description = "SHA1 hash of columns compatible with RDBMS."
             , ComponentType = ComponentType.Transform
             , IconResource = "Varigence.Ssis.Icons.HashSql.ico"
         )]
