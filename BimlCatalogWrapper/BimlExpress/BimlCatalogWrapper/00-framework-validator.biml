@@ -1,0 +1,23 @@
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+</Biml>
+<#@ template tier="99999" #>
+<#
+foreach (var package in RootNode.Packages.Where(i => !i.Name.Contains("Orchestration")))
+{
+    if (!package.Variables.Any(i => i.Name == "InheritBatchStartTime"))
+    {
+        ValidationReporter.Report(Severity.Error, "Package did not include 90-i-pkg-variables.biml: " + package.Name);
+    }
+    
+    if (!package.Tasks.Any(i => i.Name == "SEQC - Package Start"))
+    {
+        ValidationReporter.Report(Severity.Error, "Package did not include 90-i-orchestration.biml: " + package.Name);
+    }
+
+    if (!package.Tasks.Any(i => i.Name == "SEQC - Package End"))
+    {
+        ValidationReporter.Report(Severity.Error, "Package did not include 90-i-orchestration-end.biml: " + package.Name);
+    }
+}
+
+#>

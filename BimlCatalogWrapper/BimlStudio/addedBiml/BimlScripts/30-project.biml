@@ -1,0 +1,18 @@
+﻿<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+    <Projects>
+        <PackageProject Name="OrchestrationDemo_Project"  ProjectSubpath="OrchestrationDemo">
+            <Packages>
+            <#	var packages = RootNode.Packages.Where(i=> i.PackageSubpath == "OrchestrationDemo");
+   		        foreach(var packageNode in packages){#>
+                <Package PackageName="<#=packageNode.ScopedName#>" />
+                <#	} #>
+            </Packages>
+			<Connections>
+		        <Connection ConnectionName="AdventureWorksLT" />
+				<Connection ConnectionName="BimlStaging" />
+		        <Connection ConnectionName="BimlCatalog" />
+		    </Connections>
+        </PackageProject>
+    </Projects>
+</Biml>
+<#@ template language="C#" hostspecific="true" tier="15"#>
