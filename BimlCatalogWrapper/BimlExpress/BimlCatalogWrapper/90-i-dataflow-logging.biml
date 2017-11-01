@@ -1,5 +1,6 @@
 <#@ template designerbimlpath="Biml/Packages/Package/Tasks/Dataflow/Transformations"#>
 <#@ property name="table" type="AstTableNode" #>
+<#@ property name="keyColumnName" type="string" #>
 <#@ property name="aggregateColumnName" type="string" #>
 <!-- Add RowCount -->
 <CustomComponent Name="RC - Select <#=table.SsisSafeScopedName#>" ComponentTypeName="Varigence.Ssis.RowCount, Varigence.Ssis<#=RootNode.ObjectTag["ComponentVersion"]#>, Culture=neutral, PublicKeyToken=e9fb56b2a63ffbab">
@@ -22,10 +23,11 @@
     <InputPath OutputPathName="RC - Select <#=table.SsisSafeScopedName#>.Output" />
     <Columns>
         <Column Name="RowAuditId" DataType="Int64">@[User::ExecutionID]</Column>
-		<Column Name="RowStringKey" DataType="String" Length="100">(DT_WSTR,100)[<#=table.Columns.First().Name#>]</Column>
-	<#	if (table.Name.Contains("SalesOrderDetail")) { #>
+		<Column Name="RowStringKey" DataType="String" Length="100">(DT_WSTR,100)[<#=keyColumnName#>]</Column>
+		<!-- Artificial Error to Show Error Logging -->
+        <# if (table.Name.Contains("SalesOrderDetail")) { #>
 		<Column Name="DummyErrorColumn" DataType="DateTime">(DT_DBTIMESTAMP) ([OrderQty] >10 ?  (DT_WSTR, 20)[LineTotal] : "1900-01-01")</Column>
-	<#	} #>
+        <# } #>
     </Columns>
 	<ErrorHandling ErrorRowDisposition="RedirectRow" TruncationRowDisposition="RedirectRow" />
 </DerivedColumns>

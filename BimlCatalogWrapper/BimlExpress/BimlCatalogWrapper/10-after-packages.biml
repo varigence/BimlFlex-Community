@@ -22,7 +22,7 @@
                                 <OleDbSource Name="OLE_SRC - <#=table.SsisSafeScopedName#>" ConnectionName="AdventureWorksLT">
                                     <DirectInput>SELECT <#=table.GetColumnList()#> FROM <#=table.GetTag("SourceSchemaQualifiedName")#></DirectInput>
                                 </OleDbSource>
-                                <#=CallBimlScript("90-i-dataflow-logging.biml", table, table.Columns.Any(c => c.Name == "LineTotal") ? "LineTotal" : null)#>
+                                <#=CallBimlScript("90-i-dataflow-logging.biml", table, table.Columns.First().Name, table.Columns.Any(c => c.Name == "LineTotal") ? "LineTotal" : null)#>
                                 <OleDbDestination Name="OLE_DST - <#=table.SsisSafeScopedName#>" ConnectionName="BimlStaging">
                                     <TableOutput TableName="<#=table.ScopedName#>" />
                                 </OleDbDestination>
