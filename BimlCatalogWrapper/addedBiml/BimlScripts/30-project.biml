@@ -8,7 +8,8 @@
                 <#	} #>
             </Packages>
 			<Connections>
-		        <Connection ConnectionName="AW" />
+		        <Connection ConnectionName="AdventureWorksLT" />
+				<Connection ConnectionName="BimlStaging" />
 		        <Connection ConnectionName="BimlCatalog" />
 		    </Connections>
         </PackageProject>

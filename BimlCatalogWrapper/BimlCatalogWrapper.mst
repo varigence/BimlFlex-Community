@@ -43,7 +43,7 @@
     <Live Include="addedBiml\BimlScripts\00-environment.biml">
       <RootFolderId>0</RootFolderId>
     </Live>
-    <Live Include="addedBiml\BimlScripts\10-child-packages.biml">
+    <Live Include="addedBiml\BimlScripts\10-after-packages.biml">
       <RootFolderId>0</RootFolderId>
     </Live>
     <Live Include="addedBiml\BimlScripts\20-batch.biml">
@@ -55,7 +55,13 @@
     <None Include="BimlCatalogWrapper.bimlproj">
       <RootFolderId>0</RootFolderId>
     </None>
+    <Reference Include="addedBiml\BimlScripts\01-before-package.biml">
+      <RootFolderId>0</RootFolderId>
+    </Reference>
     <Reference Include="addedBiml\BimlScripts\90-i-logging.biml">
+      <RootFolderId>0</RootFolderId>
+    </Reference>
+    <Reference Include="addedBiml\BimlScripts\90-i-orchestration-end.biml">
       <RootFolderId>0</RootFolderId>
     </Reference>
     <Reference Include="addedBiml\BimlScripts\90-i-orchestration-onerror.biml">

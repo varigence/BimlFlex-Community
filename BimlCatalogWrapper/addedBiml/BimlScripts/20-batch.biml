@@ -7,7 +7,7 @@
 		    </Variables>
             <Tasks>
 				<#@ include file="90-i-orchestration.biml" #>
-				<Container Name="SEQC - Package Main" ConstraintMode="Parallel">
+				<Container Name="SEQC - Package Main" ConstraintMode="Linear">
 					<PrecedenceConstraints LogicalType="And">
 			        	<Inputs>
 			        		<Input OutputPathName="SEQC - Package Start.Output" EvaluationOperation="ExpressionAndConstraint" Expression="@ExecutionStatus == &quot;E&quot;||@ExecutionStatus == &quot;R&quot;" />
