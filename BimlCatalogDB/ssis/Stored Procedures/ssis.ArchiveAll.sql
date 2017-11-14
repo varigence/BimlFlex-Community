@@ -6,6 +6,7 @@ BEGIN
 	EXEC [ssis].[ArchiveRowCount]
 	EXEC [ssis].[ArchiveTaskExecution]
 	EXEC [ssis].[ArchiveAuditLog]
+	EXEC [ssis].[ArchiveConfigVariable]
 
 	RETURN 0
 

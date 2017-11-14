@@ -36,6 +36,29 @@ SET NOCOUNT ON
 				,@VariableValue
 				,@ExecutionID
 				)
+
+		IF (ISNULL((SELECT TOP 1 CONVERT(CHAR(1), [ConfigurationValue]) FROM [admin].[Configurations] WHERE [ConfigurationCode] = 'BimlFlex' AND [ConfigurationKey] = 'AuditConfigurationValue'), 'N') = 'Y')
+		BEGIN
+			INSERT INTO [ssis].[AuditConfigVariable]
+					([ConfigVariableID]
+					,[SystemName]
+					,[ObjectName]
+					,[VariableName]
+					,[VariableValue]
+					,[ExecutionID]
+					,[PreviousValue])
+			SELECT	 [ConfigVariableID]
+					,[SystemName]
+					,[ObjectName]
+					,[VariableName]
+					,[VariableValue]
+					,[ExecutionID]
+					,[PreviousValue]
+			FROM	[ssis].[ConfigVariable]
+			WHERE	[SystemName] = @SystemName
+			AND		[ObjectName] = @ObjectName
+			AND		[VariableName] = @VariableName
+		END
 	END
 	--ELSE
 	--BEGIN

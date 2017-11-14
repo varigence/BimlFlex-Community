@@ -14,9 +14,11 @@ CREATE PROCEDURE [ssis].[SetConfigVariable]
 AS
 SET NOCOUNT ON
 BEGIN TRY
-	DECLARE @PreviousValue			VARCHAR(200)
+	DECLARE  @PreviousValue			VARCHAR(200)
+			,@CurrentValue			VARCHAR(200)
 
 	SELECT	 @PreviousValue = [VariableValue]
+			,@CurrentValue = [VariableValue]
 	FROM	[ssis].[ConfigVariable]
 	WHERE	[SystemName] = @SystemName
 	AND		[ObjectName] = @ObjectName
@@ -63,34 +65,60 @@ BEGIN TRY
 		AND UPPER(ISNULL(@PreviousValue, '')) NOT IN ('', 'NULL', '0', '1900-01-01') 
 		SET @VariableValue = @PreviousValue; 
 	
-	IF NOT EXISTS (
-		SELECT	1 
-		FROM	[ssis].[ConfigVariable]
-		WHERE	[SystemName] = @SystemName
-		AND		[ObjectName] = @ObjectName
-		AND		[VariableName] = @VariableName)
+	IF (@CurrentValue <> ISNULL(@VariableValue, @CurrentValue))
 	BEGIN
-		INSERT INTO [ssis].[ConfigVariable]
-				([SystemName]
-				,[ObjectName]
-				,[VariableName]
-				,[VariableValue]
-				,[ExecutionID])
-		VALUES	(@SystemName
-				,@ObjectName
-				,@VariableName
-				,@VariableValue
-				,@ExecutionID)
-	END
-	ELSE
-	BEGIN
-		UPDATE	[ssis].[ConfigVariable]
-		SET		 [VariableValue] = ISNULL(@VariableValue, [VariableValue])
-				,[ExecutionID] = @ExecutionID
-				,[PreviousValue] = @PreviousValue
-		WHERE	[SystemName] = @SystemName
-		AND		[ObjectName] = @ObjectName
-		AND		[VariableName] = @VariableName
+		IF NOT EXISTS (
+			SELECT	1 
+			FROM	[ssis].[ConfigVariable]
+			WHERE	[SystemName] = @SystemName
+			AND		[ObjectName] = @ObjectName
+			AND		[VariableName] = @VariableName)
+		BEGIN
+			INSERT INTO [ssis].[ConfigVariable]
+					([SystemName]
+					,[ObjectName]
+					,[VariableName]
+					,[VariableValue]
+					,[ExecutionID])
+			VALUES	(@SystemName
+					,@ObjectName
+					,@VariableName
+					,@VariableValue
+					,@ExecutionID)
+		END
+		ELSE
+		BEGIN
+			UPDATE	[ssis].[ConfigVariable]
+			SET		 [VariableValue] = ISNULL(@VariableValue, [VariableValue])
+					,[ExecutionID] = @ExecutionID
+					,[PreviousValue] = @PreviousValue
+			WHERE	[SystemName] = @SystemName
+			AND		[ObjectName] = @ObjectName
+			AND		[VariableName] = @VariableName
+		END
+
+		IF (ISNULL((SELECT TOP 1 CONVERT(CHAR(1), [ConfigurationValue]) FROM [admin].[Configurations] WHERE [ConfigurationCode] = 'BimlFlex' AND [ConfigurationKey] = 'AuditConfigVariable'), 'N') = 'Y')
+		BEGIN
+			INSERT INTO [ssis].[AuditConfigVariable]
+					([ConfigVariableID]
+					,[SystemName]
+					,[ObjectName]
+					,[VariableName]
+					,[VariableValue]
+					,[ExecutionID]
+					,[PreviousValue])
+			SELECT	 [ConfigVariableID]
+					,[SystemName]
+					,[ObjectName]
+					,[VariableName]
+					,[VariableValue]
+					,[ExecutionID]
+					,[PreviousValue]
+			FROM	[ssis].[ConfigVariable]
+			WHERE	[SystemName] = @SystemName
+			AND		[ObjectName] = @ObjectName
+			AND		[VariableName] = @VariableName
+		END
 	END
 
 	--RETURN(0);
