@@ -61,10 +61,10 @@ BEGIN TRY
     END
 
 
-	IF UPPER(ISNULL(@VariableValue, '')) IN ('', 'NULL', '0', '1900-01-01') 
-		AND UPPER(ISNULL(@PreviousValue, '')) NOT IN ('', 'NULL', '0', '1900-01-01') 
+	IF (UPPER(ISNULL(@VariableValue, '')) IN ('', 'NULL', '0') OR UPPER(ISNULL(LEFT(@VariableValue, 10), '')) IN ('1899-12-31', '1900-01-01', '0000-01-01'))
+		AND (UPPER(ISNULL(@PreviousValue, '')) NOT IN ('', 'NULL', '0') OR UPPER(ISNULL(LEFT(@PreviousValue, 10), '')) NOT IN ('1899-12-31', '1900-01-01', '0000-01-01'))
 		SET @VariableValue = @PreviousValue; 
-	
+
 	IF (@CurrentValue <> ISNULL(@VariableValue, @CurrentValue))
 	BEGIN
 		IF NOT EXISTS (
