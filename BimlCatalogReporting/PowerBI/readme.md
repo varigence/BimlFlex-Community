@@ -4,11 +4,9 @@ The `BimlCatalogExecutionMonitoring.pbix` Power BI file provides a dashboard for
 
 This Power BI Dashboard was provided to the BimlCatalog project by:
 
-**BitQ**
-
-Transforming Business Data into Intelligent Data
-
-[www.bitq.com.au](https://www.bitq.com.au)
+> **BitQ**  
+> Transforming Business Data into Intelligent Data  
+> [www.bitq.com.au](https://www.bitq.com.au)
 
 It provides 3 tabs for reviewing execution data:
 
