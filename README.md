@@ -1,6 +1,6 @@
 # BimlCatalog
 
-In any SSIS solution you will need to extend the default auditing and logging behavior to capture meaningful audit and debug information. 
+In any SSIS solution you will need to extend the default auditing and logging behavior to capture meaningful audit and debug information.
 Of course, you can invest time and effort to build your own, but why not just reuse our free open source framework with provided BimlCatalog database, custom components, documentation, and extensive Biml samples?
 
 This framework is robust and able to restart from the last failure skipping already loaded packages. 
@@ -22,4 +22,10 @@ Custom SSIS components:
 * Biml Row Audit
 * Biml Row Count
 
-The components are available for Microsoft SQL Server versions 2008r2-2016 
+The components are available for Microsoft SQL Server versions 2008r2-2016
+
+## Dashboard and Reporting
+
+A Power BI file is provided to support reporting requirements on events logged in the BimlCatalog.
+
+[Read more about the Power BI dashboard here](BimlCatalogReporting/PowerBI)
