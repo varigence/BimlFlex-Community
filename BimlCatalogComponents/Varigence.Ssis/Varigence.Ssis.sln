@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Varigence.Ssis.2012", "Varigence.Ssis.2012\Varigence.Ssis.2012.csproj", "{2C347375-4CF1-444E-9AD6-26A96116E569}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Varigence.Ssis.2014", "Varigence.Ssis.2014\Varigence.Ssis.2014.csproj", "{548528D7-30DC-40B5-AFA1-FA4F6911BC28}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Varigence.Ssis.2008", "Varigence.Ssis.2008\Varigence.Ssis.2008.csproj", "{2E9AC985-9EAE-4C83-BEE4-83EAE58DDD28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Varigence.Ssis.2017", "Varigence.Ssis.2017\Varigence.Ssis.2017.csproj", "{79143AD8-1ED1-4271-B2CD-6E1F6D53B595}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{2E9AC985-9EAE-4C83-BEE4-83EAE58DDD28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E9AC985-9EAE-4C83-BEE4-83EAE58DDD28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E9AC985-9EAE-4C83-BEE4-83EAE58DDD28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79143AD8-1ED1-4271-B2CD-6E1F6D53B595}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79143AD8-1ED1-4271-B2CD-6E1F6D53B595}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79143AD8-1ED1-4271-B2CD-6E1F6D53B595}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79143AD8-1ED1-4271-B2CD-6E1F6D53B595}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
