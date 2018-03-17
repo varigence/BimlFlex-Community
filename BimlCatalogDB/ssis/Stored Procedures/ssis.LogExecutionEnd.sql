@@ -25,6 +25,27 @@ BEGIN TRY
 				,[EndTime] = GETDATE()
 		WHERE	[ExecutionID] = @ExecutionID
 
+		IF @IsBatch <> 1
+		BEGIN
+			-- Update multi thread failure checking if Batch failed.
+			UPDATE	fe
+			SET		[NextLoadStatus] = 'C'
+			FROM	[ssis].[Execution] e
+			INNER JOIN
+			(
+				SELECT	[ParentExecutionID]
+				FROM	[ssis].[Execution]
+				WHERE	[ExecutionID] = @ExecutionID
+			) pe
+				ON	e.[ExecutionID] = pe.[ParentExecutionID]
+				AND	pe.[ParentExecutionID] <> -1
+				AND	e.[ExecutionStatus] = 'F'
+			INNER JOIN [ssis].[Execution] fe
+				ON	e.[ExecutionID] = fe.[ParentExecutionID]
+				AND	fe.[ExecutionID] = @ExecutionID
+				AND	fe.[ExecutionStatus] = 'S'
+		END
+
 		IF @IsBatch = 1
 		BEGIN
 			UPDATE	[ssis].[Execution]
