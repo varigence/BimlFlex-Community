@@ -9,7 +9,8 @@ for /f "tokens=2 delims==" %%G in ('wmic os get localdatetime /value') do set da
 set year=%datetime:~0,4%
 set month=%datetime:~4,2%
 set day=%datetime:~6,2%
-set buildnum=%year:~3,4%%month%%day%
+set /a buildmonth = ((%year%-2016)*12)+%month%
+set buildnum=6%buildmonth%%day%
 
 echo UPDATE [admin].[Configurations] SET [ConfigurationValue] = '%buildnum%' WHERE [ConfigurationCode] = 'BimlCatalog' AND [ConfigurationKey] = 'DatabaseVersion' > "..\StaticData\Entities\DatabaseVersion.sql"
 
