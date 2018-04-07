@@ -159,6 +159,7 @@
     <Build Include="ssis\Stored Procedures\ssis.SetEnablePackage.sql" />
     <Build Include="ssis\Tables\ssis.AuditConfigVariable.sql" />
     <Build Include="ssis\Stored Procedures\ssis.ArchiveConfigVariable.sql" />
+    <Build Include="dbo\GetRequiredBundleVersion.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
