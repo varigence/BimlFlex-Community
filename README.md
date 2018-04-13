@@ -22,7 +22,7 @@ Custom SSIS components:
 * Biml Row Audit
 * Biml Row Count
 
-The components are available for Microsoft SQL Server versions 2008r2-2016
+The components are available for Microsoft SQL Server versions 2008r2-2017
 
 ## Dashboard and Reporting
 
