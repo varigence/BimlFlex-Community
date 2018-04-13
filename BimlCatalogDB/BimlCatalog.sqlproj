@@ -90,6 +90,7 @@
     <Folder Include="dbo" />
     <Folder Include="dbo\User Defined Types" />
     <Folder Include="rpt\Views" />
+    <Folder Include="BuildScripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="ssis\Tables\ssis.AuditRowData.sql" />
@@ -163,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
+    <None Include="BuildScripts\PreBuild.bat" />
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="Script.PreDeployment1.sql" />

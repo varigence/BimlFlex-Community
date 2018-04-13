@@ -14,3 +14,5 @@ set buildnum=6%buildmonth%%day%
 
 echo UPDATE [admin].[Configurations] SET [ConfigurationValue] = '%buildnum%' WHERE [ConfigurationCode] = 'BimlCatalog' AND [ConfigurationKey] = 'DatabaseVersion' > "..\StaticData\Entities\DatabaseVersion.sql"
 
+del ..\bin\output\bimlcatalog.*.version
+echo ^<BundleRoot xmlns="http://schemas.varigence.com/Bundle.xsd" VersionBuild="%buildnum%" /^> > "..\bin\output\bimlcatalog.%buildnum%.version"
