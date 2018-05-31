@@ -161,6 +161,8 @@
     <Build Include="ssis\Tables\ssis.AuditConfigVariable.sql" />
     <Build Include="ssis\Stored Procedures\ssis.ArchiveConfigVariable.sql" />
     <Build Include="dbo\GetRequiredBundleVersion.sql" />
+    <Build Include="rpt\Views\rpt.CurrentExecutions.sql" />
+    <Build Include="rpt\Views\rpt.LatestBatchExecutions.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
