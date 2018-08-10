@@ -5,7 +5,7 @@
 		<Package Name="LOAD <#=table.SsisSafeScopedName#>" PackageSubpath="OrchestrationDemo" LogicalDisplayFolder="Child" >
 			<Connections>
 				<Connection ConnectionName="AdventureWorksLT" />
-				<Connection ConnectionName="BimlStaging" />
+				<Connection ConnectionName="BimlCatalogStaging" />
 			</Connections>
 			<Tasks>
 				<Container Name="SEQC - Package Main" ConstraintMode="Parallel">
@@ -15,7 +15,7 @@
 								<OleDbSource Name="OLE_SRC - <#=table.SsisSafeScopedName#>" ConnectionName="AdventureWorksLT">
 									<DirectInput>SELECT <#=table.GetColumnList()#> FROM <#=table.GetTag("SourceSchemaQualifiedName")#></DirectInput>
 								</OleDbSource>
-								<OleDbDestination Name="OLE_DST - <#=table.SsisSafeScopedName#>" ConnectionName="BimlStaging">
+								<OleDbDestination Name="OLE_DST - <#=table.SsisSafeScopedName#>" ConnectionName="BimlCatalogStaging">
 									<TableOutput TableName="<#=table.ScopedName#>" />
 								</OleDbDestination>
 							</Transformations>

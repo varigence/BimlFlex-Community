@@ -17,7 +17,7 @@
     <SqlVersion>SqlServer2012</SqlVersion>
     <SsasVersion>Ssas2012</SsasVersion>
     <SsasTabularVersion>SsasTabular2016</SsasTabularVersion>
-    <SsisVersion>Ssis2016</SsisVersion>
+    <SsisVersion>Ssis2017</SsisVersion>
     <UseProjectDeploymentModel>True</UseProjectDeploymentModel>
     <ExtraCommandLineOptions />
     <IsAutoUpdateDocumentationPreviewEnabled>True</IsAutoUpdateDocumentationPreviewEnabled>
@@ -33,6 +33,7 @@
     <SelectedBimlDocSettingsFilePath />
     <SelectedBimlDocTemplateFilePath />
     <BimlStudioVersion>5.0.61626.0</BimlStudioVersion>
+    <DdlBuildMode>SsisPackages</DdlBuildMode>
   </PropertyGroup>
   <ItemGroup>
     <RootFolder Include=" ">
@@ -40,6 +41,9 @@
     </RootFolder>
   </ItemGroup>
   <ItemGroup>
+    <Live Include="addedBiml\BimlScripts\0.07.1-import-script-hash.biml">
+      <RootFolderId>0</RootFolderId>
+    </Live>
     <Live Include="addedBiml\BimlScripts\00-environment.biml">
       <RootFolderId>0</RootFolderId>
     </Live>

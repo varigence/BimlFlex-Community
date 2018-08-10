@@ -353,7 +353,7 @@ namespace Varigence.Ssis
                         }
 
                         var iByteBuffer = bufferUsed;
-                        byte[] trimmedByteBuffer = new byte[bufferUsed];
+                        var trimmedByteBuffer = new byte[bufferUsed];
                         Array.Copy(inputByteBuffer, trimmedByteBuffer, iByteBuffer);
 
                         var sha1HashDual = new SHA1CryptoServiceProvider();

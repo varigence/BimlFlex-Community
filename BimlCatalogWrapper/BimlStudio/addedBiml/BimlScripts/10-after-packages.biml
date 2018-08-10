@@ -5,7 +5,7 @@
 		<Package Name="LOAD <#=table.SsisSafeScopedName#>" PackageSubpath="OrchestrationDemo" LogicalDisplayFolder="Child" >
 			<Connections>
 				<Connection ConnectionName="AdventureWorksLT" />
-				<Connection ConnectionName="BimlStaging" />
+				<Connection ConnectionName="BimlCatalogStaging" />
 			</Connections>
 			<Variables>
 				<#@ include file="90-i-pkg-variables.biml" #>
@@ -19,7 +19,7 @@
 			        	</Inputs>
 			        </PrecedenceConstraints>
 					<Tasks>
-						<ExecuteSQL Name="SQL - Truncate <#=table.SsisSafeScopedName#>" ConnectionName="BimlStaging">
+						<ExecuteSQL Name="SQL - Truncate <#=table.SsisSafeScopedName#>" ConnectionName="BimlCatalogStaging">
 							<DirectInput>TRUNCATE TABLE <#=table.SchemaQualifiedName#></DirectInput>
 						</ExecuteSQL>
 						<Dataflow Name="DFT - LOAD <#=table.SsisSafeScopedName#>">
@@ -30,7 +30,7 @@
 					        </PrecedenceConstraints>
 							<Transformations>
 								<OleDbSource Name="OLE_SRC - <#=table.SsisSafeScopedName#>" ConnectionName="AdventureWorksLT">
-									<DirectInput>SELECT <#=table.GetColumnList()#> FROM <#=table.GetTag("SourceSchemaQualifiedName")#></DirectInput>
+									<DirectInput>SELECT * FROM <#=table.GetTag("SourceSchemaQualifiedName")#></DirectInput>
 								</OleDbSource>
 								<!-- Add RowCount -->
 								<CustomComponent Name="RC - Select <#=table.SsisSafeScopedName#>" ComponentTypeName="Varigence.Ssis.RowCount, Varigence.Ssis<#=RootNode.ObjectTag["ComponentVersion"]#>, Culture=neutral, PublicKeyToken=e9fb56b2a63ffbab">
@@ -129,7 +129,7 @@
 							        <InputPaths>
 										<InputPath Identifier="HashDualInput" ErrorRowDisposition="NotUsed"  OutputPathName="HSH - Row Sql Hash <#=table.SsisSafeScopedName#>.HashOutput">
 							                <InputColumns>
-											<#	foreach(var column in table.Columns){ #>
+											<#	foreach(var column in table.Columns.Where(c => c.GetTag("Hash") != "Y")){ #>
 												<InputColumn SourceColumn="<#=column.Name #>" />
 											<#	} #>
 											</InputColumns>
@@ -152,8 +152,34 @@
 							            </OutputPath>
 							        </OutputPaths>
 							    </CustomComponent>
+								<!-- Add SHA1 Full Row Sql Hash for All Columns -->
+								<CustomComponent Name="HSH - Full Row Sql Hash <#=table.SsisSafeScopedName#>" ComponentTypeName="Varigence.Ssis.HashSql, Varigence.Ssis<#=RootNode.ObjectTag["ComponentVersion"]#>, Culture=neutral, PublicKeyToken=e9fb56b2a63ffbab">
+							        <CustomProperties>
+	            						<CustomProperty Name="NullValue" DataType="String" TypeConverter="" UITypeEditor="">NVL</CustomProperty>
+	        						</CustomProperties>
+									<InputPaths>
+										<InputPath Identifier="HashInput" ErrorRowDisposition="NotUsed"  OutputPathName="HSH - Row Hash Dual <#=table.SsisSafeScopedName#>.HashDualOutput">
+											<InputColumns>
+											<#	foreach(var column in table.Columns.Where(c => c.GetTag("Hash") != "Y")){ #>
+												<InputColumn SourceColumn="<#=column.Name #>" />
+											<#	} #>
+											</InputColumns>
+							            </InputPath>
+									</InputPaths>
+									<OutputPaths>
+										<OutputPath Name="HashOutput" SynchronousInput="HashInput" ExclusionGroup="1" ErrorRowDisposition="NotUsed">
+											<OutputColumns>
+												<OutputColumn  Name="ComponetRowSqlHash" DataType="AnsiString" Length="40" CodePage="1252">
+													<CustomProperties>
+														<Property Name="Hash" DataType="String">Hash</Property>
+													</CustomProperties>
+												</OutputColumn>
+											</OutputColumns>
+										</OutputPath>
+									</OutputPaths>
+								</CustomComponent>
 								<DerivedColumns Name="DC - Row Hashing <#=table.SsisSafeScopedName#>">
-                                    <InputPath OutputPathName="HSH - Row Hash Dual <#=table.SsisSafeScopedName#>.HashDualOutput" />
+                                    <InputPath OutputPathName="HSH - Full Row Sql Hash <#=table.SsisSafeScopedName#>.HashOutput" />
                                     <Columns>
                                         <Column Name="BimlDualRowHash" DataType="AnsiStringFixedLength" Length="80">[RowHash1]+[RowHash1]</Column>
 										<Column Name="BimlRowHashKey" DataType="AnsiStringFixedLength" Length="40">[RowHash]</Column>
@@ -177,7 +203,7 @@
 								        <Connection ConnectionName="BimlCatalog" Name="BimlCatalog" />
 								    </Connections>
 								</CustomComponent>
-								<OleDbDestination Name="OLE_DST - <#=table.SsisSafeScopedName#>" ConnectionName="BimlStaging">
+								<OleDbDestination Name="OLE_DST - <#=table.SsisSafeScopedName#>" ConnectionName="BimlCatalogStaging">
 									<InputPath OutputPathName="RC - Insert <#=table.SsisSafeScopedName#>.Output" />
 									<TableOutput TableName="<#=table.ScopedName#>" />
 								</OleDbDestination>

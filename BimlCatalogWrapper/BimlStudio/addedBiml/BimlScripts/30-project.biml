@@ -9,7 +9,7 @@
             </Packages>
 			<Connections>
 		        <Connection ConnectionName="AdventureWorksLT" />
-				<Connection ConnectionName="BimlStaging" />
+				<Connection ConnectionName="BimlCatalogStaging" />
 		        <Connection ConnectionName="BimlCatalog" />
 		    </Connections>
         </PackageProject>

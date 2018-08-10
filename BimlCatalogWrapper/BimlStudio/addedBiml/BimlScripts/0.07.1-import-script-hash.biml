@@ -1,0 +1,588 @@
+﻿<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+	<ScriptProjects>
+	<#	foreach(var table in RootNode.Tables) {#>
+        <ScriptComponentProject Name="SCP_HASH_<#=table.Name#>" ProjectCoreName="SCP_HASH_<#=table.Name#>">
+            <AssemblyReferences>
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.DTSPipelineWrap.dll" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.DTSRuntimeWrap.dll" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.PipelineHost.dll" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.TxScript.dll" />
+                <AssemblyReference AssemblyPath="System.dll" />
+                <AssemblyReference AssemblyPath="System.AddIn.dll" />
+                <AssemblyReference AssemblyPath="System.Data.dll" />
+                <AssemblyReference AssemblyPath="System.Xml.dll" />
+            </AssemblyReferences>
+            <Files>
+                <File Path="ScriptMain.cs">using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Reflection;
+using Microsoft.SqlServer.Dts.Pipeline;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using Microsoft.SqlServer.Dts.Runtime.Wrapper;
+using System.Security.Cryptography;
+using System.Text;
+using System.IO;
+using SCP_HASH_<#=table.Name#>.csproj;
+[Microsoft.SqlServer.Dts.Pipeline.SSISScriptComponentEntryPointAttribute]
+public class ScriptMain : UserComponent
+{
+    private int ColumnCount;
+    private ColumnInfo[] inputColumnInfos;
+    private PipelineBuffer inputBuffer;
+    private SHA1CryptoServiceProvider SHA1Hash;
+    private struct ColumnInfo
+    {
+        public int bufferColumnIndex;
+        public string columnName;
+        public string dataType;
+    }
+    public override void PreExecute()
+    {
+        base.PreExecute();
+        SHA1Hash = new SHA1CryptoServiceProvider();
+        ColumnCount = ComponentMetaData.InputCollection[0].InputColumnCollection.Count;
+        inputColumnInfos = new ColumnInfo[ColumnCount];
+        int[] columnIndexes = GetColumnIndexes(ComponentMetaData.InputCollection[0].ID);
+        int columnIndex = 0;
+        foreach (IDTSInputColumn100 item in ComponentMetaData.InputCollection[0].InputColumnCollection)
+        {
+            inputColumnInfos[columnIndex] = new ColumnInfo
+            {
+                columnName = Convert.ToString(item.Name),
+                bufferColumnIndex =
+                    columnIndexes[ComponentMetaData.InputCollection[0].InputColumnCollection.GetObjectIndexByID(item.ID)
+                        ],
+                dataType = item.DataType.ToString()
+            };
+            columnIndex++;
+        }
+    }
+    public override void ProcessInput(int InputID, Microsoft.SqlServer.Dts.Pipeline.PipelineBuffer Buffer)
+    {
+        inputBuffer = Buffer;
+        base.ProcessInput(InputID, Buffer);
+    }
+    public override void PostExecute()
+    {
+        base.PostExecute();
+    }
+    public override void Input0_ProcessInputRow(Input0Buffer Row)
+    {
+        var isError = false;
+        var inputByteBuffer = new byte[1000];
+        var bufferUsed = 0;
+        uint blobLength = 0;
+        var columnToProcessID = 0;
+        for (int i = 0; i &lt; ColumnCount; i++)
+        {
+            ColumnInfo info = inputColumnInfos[i];
+            columnToProcessID = info.bufferColumnIndex;
+
+            if (!inputBuffer.IsNull(columnToProcessID))
+            {
+                switch (inputBuffer.GetColumnInfo(columnToProcessID).DataType)
+                {
+                    case DataType.DT_BOOL:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetBoolean(columnToProcessID));
+                        break;
+                    case DataType.DT_IMAGE:
+                        blobLength = inputBuffer.GetBlobLength(columnToProcessID);
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetBlobData(columnToProcessID, 0, (int)blobLength));
+                        break;
+                    case DataType.DT_BYTES:
+                        byte[] bytesFromBuffer = inputBuffer.GetBytes(columnToProcessID);
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, bytesFromBuffer);
+                        break;
+                    case DataType.DT_CY:
+                    case DataType.DT_DECIMAL:
+                    case DataType.DT_NUMERIC:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetDecimal(columnToProcessID));
+                        break;
+                    //case DataType.DT_DBTIMESTAMPOFFSET:
+                    //    DateTimeOffset dateTimeOffset = inputBuffer.GetDateTimeOffset(columnToProcessID);
+                    //    Utility.Append(ref inputByteBuffer, ref bufferUsed, dateTimeOffset);
+                    //    break;
+                    case DataType.DT_DBDATE:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetDate(columnToProcessID), millisecondHandling);
+                        break;
+                    case DataType.DT_DATE:
+                    case DataType.DT_DBTIMESTAMP:
+                    case DataType.DT_DBTIMESTAMP2:
+                    case DataType.DT_FILETIME:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetDateTime(columnToProcessID), millisecondHandling);
+                        break;
+                    case DataType.DT_DBTIME:
+                    case DataType.DT_DBTIME2:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetTime(columnToProcessID));
+                        break;
+                    case DataType.DT_GUID:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetGuid(columnToProcessID));
+                        break;
+                    case DataType.DT_I1:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetSByte(columnToProcessID));
+                        break;
+                    case DataType.DT_I2:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetInt16(columnToProcessID));
+                        break;
+                    case DataType.DT_I4:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetInt32(columnToProcessID));
+                        break;
+                    case DataType.DT_I8:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetInt64(columnToProcessID));
+                        break;
+                    case DataType.DT_STR:
+                    case DataType.DT_TEXT:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetString(columnToProcessID), Encoding.ASCII);
+                        break;
+                    case DataType.DT_NTEXT:
+                    case DataType.DT_WSTR:
+                        var wstr = inputBuffer.GetString(columnToProcessID);
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetString(columnToProcessID), Encoding.Unicode);
+                        break;
+                    case DataType.DT_R4:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetSingle(columnToProcessID));
+                        break;
+                    case DataType.DT_R8:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetDouble(columnToProcessID));
+                        break;
+                    case DataType.DT_UI1:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetByte(columnToProcessID));
+                        break;
+                    case DataType.DT_UI2:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetUInt16(columnToProcessID));
+                        break;
+                    case DataType.DT_UI4:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetUInt32(columnToProcessID));
+                        break;
+                    case DataType.DT_UI8:
+                        Utility.Append(ref inputByteBuffer, ref bufferUsed, inputBuffer.GetUInt64(columnToProcessID));
+                        break;
+                    case DataType.DT_EMPTY:
+                    case DataType.DT_NULL:
+                    default:
+                        break;
+                }
+            }
+            else if (!string.IsNullOrEmpty(nullValue))
+            {
+                Utility.Append(ref inputByteBuffer, ref bufferUsed, nullValue, Encoding.ASCII);
+            }
+        }
+					
+		var iByteBuffer = bufferUsed;
+        var trimmedByteBuffer = new byte[bufferUsed];
+        Array.Copy(inputByteBuffer, trimmedByteBuffer, iByteBuffer);
+
+        var cryptoServiceProvider = new SHA1CryptoServiceProvider();
+		var binaryHash = cryptoServiceProvider.ComputeHash(trimmedByteBuffer)
+        var stringHash = BitConverter.ToString(binaryHash).Replace("-", "");
+
+        Row.stringHash = stringHash;
+    }
+}
+            </File>
+                <File Path="Utility.cs">using System;
+using System.IO;
+using System.Text;
+namespace SCP_HASH_<#=table.Name#>.csproj
+{
+    public static class Utility
+    {
+        #region Types to Byte Arrays
+
+        public static byte[] ToArray(bool value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(decimal value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        private static byte[] ToArray(DateTimeOffset value, bool millisecondHandling)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(millisecondHandling
+                        ? value.ToString("yyyy-MM-dd HH:mm:ss.fffffff zzz")
+                        : value.ToString("u"));
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(DateTime value, bool millisecondHandling)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(millisecondHandling
+                        ? value.ToString("yyyy-MM-dd HH:mm:ss.fffffff")
+                        : value.ToString("u"));
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(TimeSpan value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value.ToString());
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(byte value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(Guid value)
+        {
+            return value.ToByteArray();
+        }
+
+        public static byte[] ToArray(short value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(int value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(long value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(float value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(double value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(ushort value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(uint value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(ulong value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        public static byte[] ToArray(sbyte value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    writer.Write(value);
+                    return stream.ToArray();
+                }
+            }
+        }
+
+        #endregion Types to Byte Arrays
+
+        #region Byte Array Appending
+
+        public static void Append(ref byte[] array, ref int bufferUsed, bool value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        private static void Append(ref byte[] array, ref int bufferUsed, System.DateTimeOffset value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value, true));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, DateTime value, bool millisecondHandling)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value, millisecondHandling));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, TimeSpan value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, Guid value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, ulong value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, float value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, byte value)
+        {
+            if (bufferUsed + 1 &gt;= array.Length)
+            {
+                System.Array.Resize&lt;byte&gt;(ref array, array.Length + 1000);
+            }
+
+            array[bufferUsed++] = value;
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, byte[] value)
+        {
+            var valueLength = value.Length;
+            var arrayLength = array.Length;
+
+            if (bufferUsed + valueLength &gt;= arrayLength)
+            {
+                if (valueLength > 1000)
+                {
+                    System.Array.Resize&lt;byte&gt;(ref array, arrayLength + valueLength + 1000);
+                }
+                else
+                {
+                    System.Array.Resize&lt;byte&gt;(ref array, arrayLength + 1000);
+                }
+            }
+
+            System.Array.Copy(value, 0, array, bufferUsed, valueLength);
+            bufferUsed += valueLength;
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, sbyte value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, short value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, ushort value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, int value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, long value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, uint value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, double value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, decimal value)
+        {
+            Append(ref array, ref bufferUsed, ToArray(value));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, char value, Encoding encoding)
+        {
+            Append(ref array, ref bufferUsed, encoding.GetBytes(new char[] { value }));
+        }
+
+        public static void Append(ref byte[] array, ref int bufferUsed, string value, System.Text.Encoding encoding)
+        {
+            Append(ref array, ref bufferUsed, encoding.GetBytes(value));
+        }
+        #endregion Byte Array Appending
+
+    }
+}
+</File>
+            </Files>
+            <OutputBuffers>
+                <OutputBuffer Name="Output0">
+                    <Columns>
+						<#* #>
+                        <Column Name="binaryHash" Length="20" DataType="Binary" />
+						*#>
+						<Column Name="ScriptRowSqlHash" DataType="AnsiStringFixedLength" Length="40" CodePage="1252" />
+                    </Columns>
+                </OutputBuffer>
+            </OutputBuffers>
+            <InputBuffer Name="Input0">
+                <Columns>
+				<#	foreach(var column in table.Columns.Where(c => c.GetTag("Hash") != "Y")){ #>
+					<Column Name="<#=column.Name#>" <#=GetBimlDatatype(column.DataType.ToString(), column.Length, column.Precision, column.Scale) #> UsageType="ReadOnly" />
+				<#	} #>
+                </Columns>
+            </InputBuffer>
+        </ScriptComponentProject>
+	<#	} #>
+    </ScriptProjects>
+</Biml>
+
+<#+
+private string GetBimlDatatype(string type, int length, int precision, int scale)
+{
+    length = length >= 1 ? length : 2147483647;
+    var bimlDataType = "DataType=\"" + type + "\"";
+    
+	switch (type)
+    {
+        case "geometry":
+        case "geography":
+        case "hierarchyid":
+        case "smallmoney":
+        {
+            return "DataType=\"Object\" CustomType=\"" + type + "\"";
+        }
+	}
+	
+	switch (type)
+    {
+        case "UInt16":
+        {
+            return "DataType=\"Int32\"";
+        }
+        case "UInt32":
+        case "UInt64":
+        {
+            return "DataType=\"Int64\"";
+        }
+        case "DateTime2":
+        {
+            return $"DataType=\"{type}\" Scale=\"{(scale >= 0 ? scale : 7)}\"";
+        }
+        case "Decimal":
+            return $"DataType=\"{type}\" Precision=\"{(precision >= 1 ? precision : 18)}\" Scale=\"{(scale >= 0 ? scale : 0)}\"";
+        case "Guid":
+        {
+            return "DataType=\"String\" Length=\"50\"";
+            //return "DataType=\"Guid\"";
+        }
+        case "VarNumeric":
+        case "Binary":
+        {
+            return $"DataType=\"{type}\" Length=\"{(length <= 4000 ? length : -1)}\"";
+        }
+        case "String":
+        case "StringFixedLength":
+        {
+            return $"DataType=\"{type}\" Length=\"{(length <= 4000 ? length : -1)}\"";
+        }
+        case "AnsiString":
+        case "AnsiStringFixedLength":
+        {
+            return $"DataType=\"{type}\" Length=\"{(length <= 8000 ? length : -1)}\"";
+        }
+    }
+
+    return bimlDataType;
+}
+#>
