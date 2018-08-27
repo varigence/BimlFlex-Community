@@ -18,7 +18,7 @@ BEGIN TRY
 	BEGIN TRANSACTION
 		UPDATE	e
 		SET		[ExecutionStatus] = 'A'
-				,[NextLoadStatus] = 'C'
+				,[NextLoadStatus] = 'P'
 				,[EndTime] = ISNULL(e.[EndTime], GETDATE())
 		FROM	[ssis].[Execution] e
 		INNER JOIN [ssis].[Package] p 

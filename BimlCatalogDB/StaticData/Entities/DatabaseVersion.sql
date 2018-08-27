@@ -1,1 +1,1 @@
-UPDATE [admin].[Configurations] SET [ConfigurationValue] = '62931' WHERE [ConfigurationCode] = 'BimlCatalog' AND [ConfigurationKey] = 'DatabaseVersion' 
+UPDATE [admin].[Configurations] SET [ConfigurationValue] = '627' WHERE [ConfigurationCode] = 'BimlCatalog' AND [ConfigurationKey] = 'DatabaseVersion' 
