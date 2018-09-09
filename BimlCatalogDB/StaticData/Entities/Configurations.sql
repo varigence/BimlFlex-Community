@@ -5,6 +5,7 @@
 
 INSERT INTO @tblInsert([ConfigurationCode], [ConfigurationKey], [ConfigurationValue])
 VALUES	 ('BimlFlex', 'PackageRetryLimit', '3')
+		,('BimlFlex', 'PipelineRetryLimit', '3')
 		,('BimlFlex', 'SSISDB', 'SSISDB')
 		,('BimlFlex', 'AuditConfigVariable', 'Y')
 		,('BimlFlex', 'ConfigVariablePeriod', '120')
