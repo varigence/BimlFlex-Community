@@ -9,6 +9,7 @@ for /f "tokens=2 delims==" %%G in ('wmic os get localdatetime /value') do set da
 set year=%datetime:~0,4%
 set month=%datetime:~4,2%
 set day=%datetime:~6,2%
+if "%month:~0,1%"=="0" (set month=%month:~1%)
 set /a buildmonth = ((%year%-2016)*12)+%month%
 set buildnum=6%buildmonth%%day%
 

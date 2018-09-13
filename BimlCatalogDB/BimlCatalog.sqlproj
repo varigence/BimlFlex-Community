@@ -163,6 +163,7 @@
     <Build Include="dbo\GetRequiredBundleVersion.sql" />
     <Build Include="rpt\Views\rpt.CurrentExecutions.sql" />
     <Build Include="rpt\Views\rpt.LatestBatchExecutions.sql" />
+    <Build Include="rpt\Views\rpt.LastBatchExecution.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />

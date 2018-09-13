@@ -29,6 +29,10 @@ DECLARE	 @PackageID				INT
 		,@LastExecutionStatus	VARCHAR(1)
 		,@IsEnabled				BIT
 		,@PackageRetryCount		INT
+		,@ExecutionStartTime	DATETIME
+
+
+SELECT @ExecutionStartTime = CASE WHEN ISNULL((SELECT TOP 1 [ConfigurationValue] FROM [admin].[Configurations] WHERE [ConfigurationCode] = 'BimlFlex' AND [ConfigurationKey] = 'UseGETUTCDATE'), 'N') = 'Y' THEN GETUTCDATE() ELSE GETDATE() END
 
 SELECT  @ExecutionID = MAX([ExecutionID])
 FROM    [ssis].[Execution]
@@ -112,7 +116,7 @@ BEGIN
 			UPDATE	e
 			SET		[ExecutionStatus] = 'A'
 					,[NextLoadStatus] = 'C'
-					,[EndTime] = ISNULL(e.[EndTime], GETDATE())
+					,[EndTime] = ISNULL(e.[EndTime], @ExecutionStartTime)
 			FROM	[ssis].[Execution] e
 			INNER JOIN [ssis].[Package] p 
 				ON e.[PackageID] = p.[PackageID]
@@ -152,7 +156,7 @@ BEGIN
 		WHERE	[ExecutionID] = @ParentExecutionID
 	END
 
-	SET	@BatchStartTime = ISNULL(@BatchStartTime, GETDATE())
+	SET	@BatchStartTime = ISNULL(@BatchStartTime, @ExecutionStartTime)
 
 	INSERT INTO [ssis].[Execution]
 			([ParentExecutionID]
@@ -173,7 +177,7 @@ BEGIN
 			,@ServerExecutionID
 			,@ExecutionStatus
 			,@NextLoadStatus
-			,CASE WHEN ISNULL(@ParentExecutionID, -1) = -1 THEN @BatchStartTime ELSE GETDATE() END
+			,CASE WHEN ISNULL(@ParentExecutionID, -1) = -1 THEN @BatchStartTime ELSE @ExecutionStartTime END
 			,@BatchStartTime);
 
 	SELECT  @ExecutionID = SCOPE_IDENTITY();
@@ -200,7 +204,7 @@ END
 SELECT	@LastExecutionID = ISNULL(@LastExecutionID, @ExecutionID)
 SELECT	@ExecutionStatus = ISNULL(@ExecutionStatus, 'C')
 SELECT	@NextLoadStatus = ISNULL(@NextLoadStatus, 'C')
-SELECT	@BatchStartTime = ISNULL(@BatchStartTime, GETDATE())
+SELECT	@BatchStartTime = ISNULL(@BatchStartTime, @ExecutionStartTime)
 
 /*
 

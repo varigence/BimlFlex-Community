@@ -14,7 +14,8 @@ VALUES	 ('BimlFlex', 'PackageRetryLimit', '3')
 		,('BimlFlex', 'RowCountRetentionPeriod', '90')
 		,('BimlFlex', 'TaskExecutionRetentionPeriod', '30')
 		,('BimlFlex', 'LogTaskExecution', 'N')
-		,('BimlFlex', 'RequiredBundleVersion', '62803 ')
+		,('BimlFlex', 'RequiredBundleVersion', '63313')
+		,('BimlFlex', 'UseGETUTCDATE', 'N')
 		,('BimlCatalog', 'DatabaseVersion', '70101')
 
 MERGE [admin].[Configurations] AS TARGET
