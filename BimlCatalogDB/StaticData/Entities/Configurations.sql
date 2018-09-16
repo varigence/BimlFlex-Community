@@ -14,7 +14,7 @@ VALUES	 ('BimlFlex', 'PackageRetryLimit', '3')
 		,('BimlFlex', 'RowCountRetentionPeriod', '90')
 		,('BimlFlex', 'TaskExecutionRetentionPeriod', '30')
 		,('BimlFlex', 'LogTaskExecution', 'N')
-		,('BimlFlex', 'RequiredBundleVersion', '63314')
+		,('BimlFlex', 'RequiredBundleVersion', '63317')
 		,('BimlFlex', 'UseGETUTCDATE', 'N')
 		,('BimlCatalog', 'DatabaseVersion', '70101')
 
