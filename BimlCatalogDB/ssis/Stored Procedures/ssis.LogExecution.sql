@@ -82,13 +82,23 @@ BEGIN
 	-- Get previous execution status
 	SELECT	 @LastNextLoadStatus = [NextLoadStatus]
 			,@LastExecutionStatus = [ExecutionStatus]
-			,@LastExecutionID = [ExecutionID]
 	FROM	[ssis].[Execution]
 	WHERE	[ExecutionID] = 
 		(
 			SELECT	MAX([ExecutionID])
 			FROM	[ssis].[Execution]
 			WHERE	[PackageID] = @PackageID
+		)
+
+	-- Get Last Succesful ExecutionID
+	SELECT	@LastExecutionID = [ExecutionID]
+	FROM	[ssis].[Execution]
+	WHERE	[ExecutionID] = 
+		(
+			SELECT	MAX([ExecutionID])
+			FROM	[ssis].[Execution]
+			WHERE	[PackageID] = @PackageID
+			AND		[ExecutionStatus] = 'S'
 		)
 
 	-- If the package is currently executing or disabled abort the process.
