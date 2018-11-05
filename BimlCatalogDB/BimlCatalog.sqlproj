@@ -182,6 +182,7 @@
     <Build Include="adf\Tables\adf.Execution.sql" />
     <Build Include="adf\Tables\adf.ExecutionError.sql" />
     <Build Include="adf\Tables\adf.Pipeline.sql" />
+    <Build Include="Security\adf.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />

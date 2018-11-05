@@ -7,10 +7,10 @@
 */
 CREATE PROCEDURE [adf].[LogActivityOutput](
     @ExecutionID			[bigint],
-    @ActivityName			[nvarchar](200) NULL,
-    @ActivityOutput			[NVARCHAR](MAX) NULL,
-    @RowsRead				[BIGINT] NULL,
-    @RowsCopied				[BIGINT] NULL
+    @ActivityName			[NVARCHAR](200) = NULL,
+    @ActivityOutput			[NVARCHAR](MAX) = NULL,
+    @RowsRead				[BIGINT] = NULL,
+    @RowsCopied				[BIGINT] = NULL
 ) 
 AS
 BEGIN TRY

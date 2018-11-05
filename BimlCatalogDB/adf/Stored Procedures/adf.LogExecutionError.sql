@@ -7,10 +7,10 @@
 */
 CREATE PROCEDURE [adf].[LogExecutionError](
 	@ExecutionID		[BIGINT],
-	@ActivityName		NVARCHAR(200) NULL,
-	@ActivityOutput		NVARCHAR(MAX) NULL,
-	@OutputMessage		NVARCHAR(MAX) NULL,
-	@OutputError		NVARCHAR(MAX) NULL
+	@ActivityName		NVARCHAR(200) = NULL,
+	@ActivityOutput		NVARCHAR(MAX) = NULL,
+	@OutputMessage		NVARCHAR(MAX) = NULL,
+	@OutputError		NVARCHAR(MAX) = NULL
 )
 AS 
 -- TODO: check for and register non-existent run first, error condition has happened in the ADF fabric?

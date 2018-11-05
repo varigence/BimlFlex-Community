@@ -7,18 +7,18 @@
 */
 CREATE PROCEDURE [adf].[LogExecutionDetails](
 	@ExecutionID			BIGINT,
-	@ParentExecutionID		BIGINT NULL,
+	@ParentExecutionID		BIGINT = NULL,
 	@DataFactory			NVARCHAR(65),
 	@Pipeline				NVARCHAR(2000),
 	@RunId        			NVARCHAR(100),
-	@TriggerType			NVARCHAR(100) NULL,
-	@TriggerId				NVARCHAR(100) NULL,
-	@TriggerName			NVARCHAR(100) NULL,
-	@TriggerTime			NVARCHAR(100) NULL,
-	@TriggerScheduledTime	NVARCHAR(100) NULL,
-	@TriggerStartTime		NVARCHAR(100) NULL,
-	@TriggerWindowStartTime	NVARCHAR(100) NULL,
-	@TriggerWindowEndTime	NVARCHAR(100) NULL,
+	@TriggerType			NVARCHAR(100) = NULL,
+	@TriggerId				NVARCHAR(100) = NULL,
+	@TriggerName			NVARCHAR(100) = NULL,
+	@TriggerTime			NVARCHAR(100) = NULL,
+	@TriggerScheduledTime	NVARCHAR(100) = NULL,
+	@TriggerStartTime		NVARCHAR(100) = NULL,
+	@TriggerWindowStartTime	NVARCHAR(100) = NULL,
+	@TriggerWindowEndTime	NVARCHAR(100) = NULL,
 	@ProjectName			VARCHAR(500)  = NULL
 )
 AS 
