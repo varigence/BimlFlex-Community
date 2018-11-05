@@ -91,6 +91,9 @@
     <Folder Include="dbo\User Defined Types" />
     <Folder Include="rpt\Views" />
     <Folder Include="BuildScripts" />
+    <Folder Include="adf" />
+    <Folder Include="adf\Stored Procedures" />
+    <Folder Include="adf\Tables" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="ssis\Tables\ssis.AuditRowData.sql" />
@@ -164,6 +167,21 @@
     <Build Include="rpt\Views\rpt.CurrentExecutions.sql" />
     <Build Include="rpt\Views\rpt.LatestBatchExecutions.sql" />
     <Build Include="rpt\Views\rpt.LastBatchExecution.sql" />
+    <Build Include="adf\Stored Procedures\adf.GetConfigVariable.sql" />
+    <Build Include="adf\Stored Procedures\adf.GetExecutionDetails.sql" />
+    <Build Include="adf\Stored Procedures\adf.LogActivityOutput.sql" />
+    <Build Include="adf\Stored Procedures\adf.LogExecution.sql" />
+    <Build Include="adf\Stored Procedures\adf.LogExecutionDetails.sql" />
+    <Build Include="adf\Stored Procedures\adf.LogExecutionEnd.sql" />
+    <Build Include="adf\Stored Procedures\adf.LogExecutionError.sql" />
+    <Build Include="adf\Stored Procedures\adf.LogExecutionStart.sql" />
+    <Build Include="adf\Stored Procedures\adf.SetConfigVariable.sql" />
+    <Build Include="adf\Tables\adf.ActivityOutput.sql" />
+    <Build Include="adf\Tables\adf.AuditConfigVariable.sql" />
+    <Build Include="adf\Tables\adf.ConfigVariable.sql" />
+    <Build Include="adf\Tables\adf.Execution.sql" />
+    <Build Include="adf\Tables\adf.ExecutionError.sql" />
+    <Build Include="adf\Tables\adf.Pipeline.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BimlCatalog.publish.xml" />
