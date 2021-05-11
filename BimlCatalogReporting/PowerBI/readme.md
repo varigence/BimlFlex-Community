@@ -8,25 +8,25 @@ This Power BI Dashboard was provided to the BimlCatalog project by:
 > Transforming Business Data into Intelligent Data  
 > [www.bitq.com.au](https://www.bitq.com.au)
 
-It provides 3 tabs for reviewing execution data:
+It provides three tabs for reviewing execution data:
 
-* Package Executions
-* Execution Trends
-* Error Details
+* Data Logistics executions
+* Execution trends
+* Error details
 
-## Package Executions
+## Data Logistics executions
 
 Shows an overview and drill through options for executions.
 
 ![Package Executions](images/ss-PackageExecutions.png)
 
-## Execution Trends
+## Execution trends
 
 Shows trends for executions.
 
 ![Execution Trends](images/ss-ExecutionTrends.png)
 
-## Error Details
+## Error details
 
 Shows details for errors.
 
@@ -34,6 +34,9 @@ Shows details for errors.
 
 ## Connecting to a BimlCatalog instance
 
-The Power BI file has an embedded connection to the BimlCatalog database.
+The Power BI file has an embedded connection to the BimlCatalog database to localhost.
 
-Update the connection to point to the BimlCatalog from where reporting data should be extracted and refresh the data.
+Update the connection to point to the BimlCatalog from where reporting data should be extracted and refresh the data:
+
+* For Power BI (desktop) this can be done by navigating to query editor, by right-clicking the table on the right hand pane ('edit query'). In the next screen there is a 'data source settings' option where you can modify the connection. 
+* You can also navigate to File -> Options and settings -> Data source settings to make this change. 
