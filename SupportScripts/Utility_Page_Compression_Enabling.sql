@@ -1,17 +1,15 @@
-/* 
+/* *********************************************
+* Disclaimer and License
+* Use this executable script at your own risk!
+* THIS SCRIPT IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+* IN NO EVENT SHALL VARIGENCE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THIS SCRIPT OR THE USE OR OTHER DEALINGS IN THIS SCRIPT.
+* ******************************************** */
 
-####################################################################################################
-# Disclaimer and License
-# Use this executable script at your own risk!
-# THIS SCRIPT IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL VARIGENCE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THIS SCRIPT OR THE USE OR OTHER DEALINGS IN THIS SCRIPT.
-####################################################################################################
-    
+/*    
 On this script:
 - This script can be used to enable/disable PAGE compression on existing objects. Filters can be changed to match the intended selection or outcome.
 - The script is to assist troubleshooting and performance management at database level.
 - It is part of BimlFlex community and not supported by Varigence.
-
 */
 
 SET ANSI_NULLS ON
